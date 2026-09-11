@@ -1,0 +1,13 @@
+# Entorno y reglas del agente
+.agents/
+
+# Documentación y guías internas locales
+README/
+
+# Diagramas y modelos locales
+Diagramas/
+
+# Archivos del sistema y entorno
+.DS_Store
+Thumbs.db
+*.log
