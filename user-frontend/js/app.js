@@ -1,138 +1,15 @@
 // app.js
-// NexWork Systems - Corporate Hardware E-commerce & Customer Feedback System
+// NexWork Systems - Corporate Hardware E-commerce (UI & Presentation Layer)
+// Consumes the Service Layer (api.js) via the Service Adapter Pattern
 
-// In-memory catalog database
-let products = [
-    {
-        id: 1,
-        name: 'Aura Studio Master II 32" Display',
-        category: 'Monitores',
-        desc: 'Panel IPS Black 6K con calibración Delta-E < 1, 99% DCI-P3 y base ergonómica de aluminio mecanizado.',
-        sentiment: 'positive',
-        score: 96,
-        rating: 4.9,
-        reviewsCount: 248,
-        sentimentBreakdown: { pos: 96, neu: 3, neg: 1 },
-        price: '$1,490.00',
-        imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=700&auto=format&fit=crop&q=80'
-    },
-    {
-        id: 2,
-        name: 'Strata ErgoMotion Dual Desk Frame',
-        category: 'Mobiliario',
-        desc: 'Estructura de escritorio motorizada con doble motor ultra silencioso (<45dB), sensor anti-colisión y panel táctil.',
-        sentiment: 'positive',
-        score: 88,
-        rating: 4.7,
-        reviewsCount: 142,
-        sentimentBreakdown: { pos: 88, neu: 8, neg: 4 },
-        price: '$820.00',
-        imageUrl: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=700&auto=format&fit=crop&q=80'
-    },
-    {
-        id: 3,
-        name: 'Vessel Task Precision Ergonomic Chair',
-        category: 'Mobiliario',
-        desc: 'Silla ergonómica de ingeniería con respaldo en malla transpirable 3D, ajuste dinámico postural y soporte lumbar 4D.',
-        sentiment: 'neutral',
-        score: 74,
-        rating: 4.1,
-        reviewsCount: 96,
-        sentimentBreakdown: { pos: 74, neu: 18, neg: 8 },
-        price: '$650.00',
-        imageUrl: 'https://images.unsplash.com/photo-1505797149-43b0069ec26b?w=700&auto=format&fit=crop&q=80'
-    },
-    {
-        id: 4,
-        name: 'NovaCraft Pro Wireless Keyboard',
-        category: 'Periféricos',
-        desc: 'Teclado mecánico custom inalámbrico 75% con chasis de aluminio CNC, switches lineales lubricados e insonorización.',
-        sentiment: 'positive',
-        score: 93,
-        rating: 4.8,
-        reviewsCount: 312,
-        sentimentBreakdown: { pos: 93, neu: 5, neg: 2 },
-        price: '$235.00',
-        imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=700&auto=format&fit=crop&q=80'
-    },
-    {
-        id: 5,
-        name: 'Apex Studio Condenser Mic & DSP',
-        category: 'Audio',
-        desc: 'Micrófono de estudio profesional híbrido XLR/USB-C con procesamiento DSP integrado y reducción acústica.',
-        sentiment: 'negative',
-        score: 42,
-        rating: 2.8,
-        reviewsCount: 64,
-        sentimentBreakdown: { pos: 42, neu: 16, neg: 42 },
-        price: '$189.00',
-        imageUrl: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=700&auto=format&fit=crop&q=80'
-    },
-    {
-        id: 6,
-        name: 'Synapse Noise-Cancelling ANC Pro',
-        category: 'Audio',
-        desc: 'Auriculares circumaurales inalámbricos con cancelación activa de ruido adaptable híbrida y transductores de 40mm.',
-        sentiment: 'positive',
-        score: 86,
-        rating: 4.6,
-        reviewsCount: 194,
-        sentimentBreakdown: { pos: 86, neu: 9, neg: 5 },
-        price: '$349.00',
-        imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700&auto=format&fit=crop&q=80'
-    },
-    {
-        id: 7,
-        name: 'Horizon UltraWide 49" Curved Display',
-        category: 'Monitores',
-        desc: 'Monitor curvo 1000R Dual QHD 144Hz con panel Quantum Dot y conectividad USB-C 90W Power Delivery.',
-        sentiment: 'positive',
-        score: 95,
-        rating: 4.9,
-        reviewsCount: 188,
-        sentimentBreakdown: { pos: 95, neu: 4, neg: 1 },
-        price: '$1,850.00',
-        imageUrl: 'https://images.unsplash.com/photo-1547082299-de196ea013d6?w=700&auto=format&fit=crop&q=80'
-    },
-    {
-        id: 8,
-        name: 'Lumina Bar Pro Smart ScreenBar',
-        category: 'Iluminación',
-        desc: 'Lámpara de monitor asimétrica sin reflejos en pantalla con sensor de luz ambiental y dial inalámbrico táctil.',
-        sentiment: 'positive',
-        score: 91,
-        rating: 4.7,
-        reviewsCount: 130,
-        sentimentBreakdown: { pos: 91, neu: 7, neg: 2 },
-        price: '$119.00',
-        imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=700&auto=format&fit=crop&q=80'
-    },
-    {
-        id: 9,
-        name: 'Nexus Thunderbolt 4 Quad-Dock',
-        category: 'Conectividad',
-        desc: 'Estación de acoplamiento corporativa con 4 puertos Thunderbolt 4, lectura SD UHS-II y carga de 100W.',
-        sentiment: 'neutral',
-        score: 79,
-        rating: 4.3,
-        reviewsCount: 45,
-        sentimentBreakdown: { pos: 79, neu: 14, neg: 7 },
-        price: '$299.00',
-        imageUrl: 'https://images.unsplash.com/photo-1544652478-6653e09f18a2?w=700&auto=format&fit=crop&q=80'
-    }
-];
-
-// Clean Registered Users Database (Starts completely clean)
-let registeredUsers = [];
-
-// Current active session (Starts unauthenticated)
-let currentUser = null;
-
+// Current UI state
+let productsList = [];
+let currentUser = null; // Clean initial state (unauthenticated)
 let currentFilter = 'all';
 let currentSearch = '';
 let currentView = 'catalog'; // 'catalog' | 'profile'
 
-// Fallback SVGs cleanly handled in JS
+// Fallback SVGs for fast image error recovery
 const fallbackSvgs = {
     'Monitores': `<svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
     'Mobiliario': `<svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><rect x="4" y="6" width="16" height="4" rx="1"/><line x1="6" y1="10" x2="6" y2="20"/><line x1="18" y1="10" x2="18" y2="20"/></svg>`,
@@ -143,13 +20,22 @@ const fallbackSvgs = {
 };
 
 // DOM Initialization
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Eswick - NexWork Systems Ready');
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Eswick - NexWork Systems Presentation Layer Initialized');
     renderAuthArea();
-    renderProducts();
+    await loadAndRenderProducts();
 });
 
-// View switcher
+// Load products from Service Layer
+async function loadAndRenderProducts() {
+    const res = await window.ApiService.getProducts();
+    if (res.success) {
+        productsList = res.data;
+        renderProducts();
+    }
+}
+
+// View switcher (Catalog / Profile)
 window.switchView = function(view) {
     currentView = view;
     
@@ -178,7 +64,7 @@ window.switchView = function(view) {
     }
 };
 
-// Auth Rendering
+// Auth Header Rendering
 function renderAuthArea() {
     const authContainer = document.getElementById('auth-area');
     if (!authContainer) return;
@@ -213,7 +99,7 @@ function renderProducts() {
     const grid = document.getElementById('product-grid');
     if (!grid) return;
 
-    const filtered = products.filter(p => {
+    const filtered = productsList.filter(p => {
         let matchesSentiment = true;
         if (currentFilter === 'positive') matchesSentiment = p.sentiment === 'positive';
         else if (currentFilter === 'neutral') matchesSentiment = p.sentiment === 'neutral';
@@ -308,7 +194,7 @@ window.handleImageError = function(imgElement, category) {
     }
 };
 
-// Render Profile & Purchases View
+// Render Profile View (Orders and Reviews)
 function renderProfileView() {
     const container = document.getElementById('profile-section');
     if (!container) return;
@@ -318,7 +204,7 @@ function renderProfileView() {
             <div style="text-align: center; padding: 4rem 1rem; max-width: 480px; margin: 0 auto;">
                 <div style="font-size: 3rem; margin-bottom: var(--space-md);">🔒</div>
                 <h3 style="font-size: 1.5rem; margin-bottom: var(--space-sm);">Acceso a tu Cuenta</h3>
-                <p style="color: var(--color-text-muted); margin-bottom: var(--space-lg);">Inicia sesión o crea una cuenta corporativa para revisar tu historial de compras y emitir opiniones sobre tus dispositivos.</p>
+                <p style="color: var(--color-text-muted); margin-bottom: var(--space-lg);">Inicia sesión o crea una cuenta para revisar tu historial de compras y emitir opiniones sobre tus dispositivos.</p>
                 <div style="display: flex; gap: var(--space-sm); justify-content: center;">
                     <button class="btn btn-outline" onclick="window.openAuthModal('login')">Iniciar Sesión</button>
                     <button class="btn btn-primary" onclick="window.openAuthModal('register')">Crear Cuenta</button>
@@ -448,7 +334,7 @@ window.resetFilters = function() {
     window.filterBySentiment('all');
 };
 
-// Authentication Modal (Tabs: Login / Register)
+// Authentication Modal
 window.openAuthModal = function(activeTab = 'login') {
     const modalContainer = document.getElementById('modal-container');
     
@@ -470,7 +356,7 @@ window.openAuthModal = function(activeTab = 'login') {
                     <form onsubmit="window.handleLoginSubmit(event)">
                         <div class="form-group">
                             <label class="form-label">Correo Electrónico</label>
-                            <input type="email" id="login-email" class="form-input" placeholder="ejemplo@empresa.com" required value="${currentUser ? currentUser.email : ''}" />
+                            <input type="email" id="login-email" class="form-input" placeholder="ejemplo@empresa.com" required />
                         </div>
                         
                         <div class="form-group">
@@ -560,33 +446,30 @@ window.switchAuthTab = function(tab) {
     }
 };
 
-window.handleLoginSubmit = function(e) {
+// Async Login via ApiService
+window.handleLoginSubmit = async function(e) {
     e.preventDefault();
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
 
-    const user = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const res = await window.ApiService.login(email, password);
 
-    if (!user) {
-        window.showErrorPopup('Usuario No Encontrado', 'El correo electrónico ingresado no se encuentra registrado en nuestro sistema. Por favor verifica tus datos o crea una cuenta nueva.');
+    if (!res.success) {
+        window.showErrorPopup('Error de Autenticación', res.error);
         return;
     }
 
-    if (user.password !== password) {
-        window.showErrorPopup('Contraseña Incorrecta', 'La contraseña ingresada no coincide con nuestros registros. Por favor inténtalo de nuevo.');
-        return;
-    }
-
-    currentUser = user;
+    currentUser = res.user;
     window.closeModal('auth-modal');
     renderAuthArea();
     if (currentView === 'profile') {
         renderProfileView();
     }
-    window.showToast(`👋 Bienvenido de nuevo, <strong>${user.name}</strong>.`);
+    window.showToast(`👋 Bienvenido de nuevo, <strong>${currentUser.name}</strong>.`);
 };
 
-window.handleRegisterSubmit = function(e) {
+// Async Register via ApiService
+window.handleRegisterSubmit = async function(e) {
     e.preventDefault();
     const name = document.getElementById('reg-name').value.trim();
     const email = document.getElementById('reg-email').value.trim();
@@ -595,55 +478,45 @@ window.handleRegisterSubmit = function(e) {
     const passwordConfirm = document.getElementById('reg-password-confirm').value;
     const termsChecked = document.getElementById('reg-terms').checked;
 
-    // Validation checks
     if (!name || !email || !company) {
-        window.showErrorPopup('Campos Incompletos', 'Por favor completa todos los campos requeridos para continuar con el registro.');
+        window.showErrorPopup('Campos Incompletos', 'Por favor completa todos los campos requeridos para continuar.');
         return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-        window.showErrorPopup('Formato de Correo Inválido', 'El correo electrónico ingresado no tiene una estructura válida (ejemplo: usuario@empresa.com).');
+        window.showErrorPopup('Formato de Correo Inválido', 'El correo electrónico no tiene una estructura válida (ej: usuario@empresa.com).');
         return;
     }
 
     if (password.length < 6) {
-        window.showErrorPopup('Contraseña Muy Corta', 'Por motivos de seguridad, la contraseña debe tener al menos 6 caracteres.');
+        window.showErrorPopup('Contraseña Muy Corta', 'Por seguridad, la contraseña debe tener al menos 6 caracteres.');
         return;
     }
 
     if (password !== passwordConfirm) {
-        window.showErrorPopup('Contraseñas No Coinciden', 'La confirmación de la contraseña no coincide con la contraseña escrita. Por favor verifícalas.');
+        window.showErrorPopup('Contraseñas No Coinciden', 'La confirmación no coincide con la contraseña escrita.');
         return;
     }
 
     if (!termsChecked) {
-        window.showErrorPopup('Términos y Privacidad', 'Debes aceptar el Aviso de Privacidad y Términos de Servicio para crear una cuenta.');
+        window.showErrorPopup('Términos y Privacidad', 'Debes aceptar el Aviso de Privacidad y Términos de Servicio.');
         return;
     }
 
-    const existingUser = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (existingUser) {
-        window.showErrorPopup('Cuenta Existente', `Ya existe una cuenta registrada con el correo <strong>${email}</strong>. Por favor inicia sesión.`);
+    const res = await window.ApiService.register({
+        name,
+        email,
+        company,
+        password
+    });
+
+    if (!res.success) {
+        window.showErrorPopup('Registro No Completado', res.error);
         return;
     }
 
-    // Create and store new user
-    const newUser = {
-        name: name,
-        email: email,
-        password: password,
-        company: company,
-        role: 'Cliente Corporativo',
-        orders: [
-            { id: 'NX-' + Math.floor(1000 + Math.random() * 9000), product: 'Lumina Bar Pro Smart ScreenBar', date: 'Hoy', total: '$119.00', status: 'En Proceso' }
-        ],
-        reviews: []
-    };
-
-    registeredUsers.push(newUser);
-    currentUser = newUser;
-
+    currentUser = res.user;
     window.closeModal('auth-modal');
     renderAuthArea();
     if (currentView === 'profile') {
@@ -833,7 +706,8 @@ window.closeModal = function(modalId = 'review-modal') {
     }
 };
 
-window.submitReview = function(e, productId, productName) {
+// Async Review Submit via ApiService
+window.submitReview = async function(e, productId, productName) {
     e.preventDefault();
     
     const form = document.getElementById('review-form');
@@ -853,29 +727,22 @@ window.submitReview = function(e, productId, productName) {
         return;
     }
 
-    // Add to current user reviews history
-    if (!currentUser.reviews) currentUser.reviews = [];
-    currentUser.reviews.unshift({
+    const res = await window.ApiService.submitReview({
+        productId: productId,
         productName: productName,
         rating: ratingVal,
         comment: commentVal,
-        date: 'Justo ahora'
+        userEmail: currentUser.email
     });
 
-    // Update product metrics
-    const product = products.find(p => p.id === productId);
-    if (product) {
-        product.reviewsCount += 1;
-        if (ratingVal >= 4) {
-            product.sentimentBreakdown.pos = Math.min(99, product.sentimentBreakdown.pos + 1);
-        } else if (ratingVal <= 2) {
-            product.sentimentBreakdown.neg = Math.min(99, product.sentimentBreakdown.neg + 2);
-        }
-    }
+    if (res.success) {
+        if (!currentUser.reviews) currentUser.reviews = [];
+        currentUser.reviews.unshift(res.review);
 
-    window.closeModal('review-modal');
-    window.showToast(`✅ Tu reseña sobre <strong>${productName}</strong> ha sido registrada con éxito.`);
-    renderProducts();
+        window.closeModal('review-modal');
+        window.showToast(`✅ Tu reseña sobre <strong>${productName}</strong> ha sido registrada con éxito.`);
+        await loadAndRenderProducts();
+    }
 };
 
 window.showToast = function(message) {
