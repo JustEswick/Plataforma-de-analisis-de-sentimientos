@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - Sentiment Analysis Platform</title>
+    
+    <meta name="description" content="Catálogo y plataforma de análisis de sentimiento empresarial.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="container">
+            <h1 class="logo">SentimentStore</h1>
+            <nav class="nav-menu">
+                <a href="#" class="nav-link active">Catálogo Enterprise</a>
+                <a href="#" class="nav-link">Mis Evaluaciones</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        <section class="catalog-section">
+            <div class="section-header fade-in">
+                <h2>Hardware & Dispositivos Premium</h2>
+                <p>Catálogo corporativo verificado mediante telemetría de sentimiento de clientes reales.</p>
+                
+                <div class="filters-bar">
+                    <button class="filter-pill active">Todos (48)</button>
+                    <button class="filter-pill">Positivos (>80%)</button>
+                    <button class="filter-pill">Neutrales (50-80%)</button>
+                    <button class="filter-pill">Bajo Revisión (<50%)</button>
+                </div>
+            </div>
+            
+            <div id="product-grid" class="product-grid">
+                <!-- Products injected via JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Contenedor del Modal de Reseñas -->
+    <div id="modal-container"></div>
+    
+    <!-- Contenedor de Toasts -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
