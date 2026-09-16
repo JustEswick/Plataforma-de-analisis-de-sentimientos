@@ -40,7 +40,7 @@ let products = [
         reviewsCount: 96,
         sentimentBreakdown: { pos: 74, neu: 18, neg: 8 },
         price: '$650.00',
-        imageUrl: 'https://images.unsplash.com/photo-1580481077195-c3a8a37f714b?w=700&auto=format&fit=crop&q=80'
+        imageUrl: 'https://images.unsplash.com/photo-1505797149-43b0069ec26b?w=700&auto=format&fit=crop&q=80'
     },
     {
         id: 4,
@@ -122,38 +122,11 @@ let products = [
     }
 ];
 
-// Registered Users Database
-let registeredUsers = [
-    {
-        name: 'Isaac E.',
-        email: 'isaac@empresa.com',
-        password: 'password123',
-        company: 'NovaTech Solutions',
-        role: 'Cliente Corporativo',
-        orders: [
-            { id: 'NX-8941', product: 'Aura Studio Master II 32" Display', date: '14 Sep 2026', total: '$1,490.00', status: 'Entregado' },
-            { id: 'NX-8920', product: 'NovaCraft Pro Wireless Keyboard', date: '10 Sep 2026', total: '$235.00', status: 'Entregado' },
-            { id: 'NX-8874', product: 'Strata ErgoMotion Dual Desk Frame', date: '28 Ago 2026', total: '$820.00', status: 'Entregado' }
-        ],
-        reviews: [
-            {
-                productName: 'Aura Studio Master II 32" Display',
-                rating: 5,
-                comment: 'La nitidez y reproducción cromática son impecables para flujos de diseño y desarrollo continuo.',
-                date: 'Hace 2 horas'
-            },
-            {
-                productName: 'NovaCraft Pro Wireless Keyboard',
-                rating: 5,
-                comment: 'El acabado en aluminio mecanizado y la respuesta acústica superaron mis expectativas.',
-                date: 'Ayer'
-            }
-        ]
-    }
-];
+// Clean Registered Users Database (Starts completely clean)
+let registeredUsers = [];
 
-// Current active session
-let currentUser = registeredUsers[0]; // Active by default for quick test, can be logged out
+// Current active session (Starts unauthenticated)
+let currentUser = null;
 
 let currentFilter = 'all';
 let currentSearch = '';
