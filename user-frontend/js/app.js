@@ -1,5 +1,5 @@
 // app.js
-// Main entry point for the User Frontend Application (RF-01 & RF-02)
+// E-commerce Mockup Application (Customer Frontend) for Sentiment Analysis Platform Validation
 
 // In-memory catalog database
 let products = [
@@ -14,20 +14,7 @@ let products = [
         reviewsCount: 248,
         sentimentBreakdown: { pos: 96, neu: 3, neg: 1 },
         price: '$1,490.00',
-        imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=700&auto=format&fit=crop&q=80',
-        imageSvg: `<svg width="100%" height="100%" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="320" height="180" fill="#0F172A"/>
-            <rect x="50" y="25" width="220" height="120" rx="4" stroke="#475569" stroke-width="3" fill="#1E293B"/>
-            <rect x="56" y="31" width="208" height="108" rx="2" fill="url(#screen-grad-1)"/>
-            <rect x="152" y="145" width="16" height="20" fill="#64748B"/>
-            <rect x="130" y="165" width="60" height="4" rx="2" fill="#94A3B8"/>
-            <defs>
-                <linearGradient id="screen-grad-1" x1="56" y1="31" x2="264" y2="139" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#3B82F6" stop-opacity="0.8"/>
-                    <stop offset="1" stop-color="#8B5CF6" stop-opacity="0.8"/>
-                </linearGradient>
-            </defs>
-        </svg>`
+        imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=700&auto=format&fit=crop&q=80'
     },
     {
         id: 2,
@@ -40,15 +27,7 @@ let products = [
         reviewsCount: 142,
         sentimentBreakdown: { pos: 88, neu: 8, neg: 4 },
         price: '$820.00',
-        imageUrl: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=700&auto=format&fit=crop&q=80',
-        imageSvg: `<svg width="100%" height="100%" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="320" height="180" fill="#F8FAFC"/>
-            <rect x="40" y="70" width="240" height="12" rx="3" fill="#334155"/>
-            <rect x="60" y="82" width="14" height="75" fill="#64748B"/>
-            <rect x="246" y="82" width="14" height="75" fill="#64748B"/>
-            <rect x="45" y="157" width="44" height="6" rx="2" fill="#475569"/>
-            <rect x="231" y="157" width="44" height="6" rx="2" fill="#475569"/>
-        </svg>`
+        imageUrl: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=700&auto=format&fit=crop&q=80'
     },
     {
         id: 3,
@@ -61,38 +40,20 @@ let products = [
         reviewsCount: 96,
         sentimentBreakdown: { pos: 74, neu: 18, neg: 8 },
         price: '$650.00',
-        imageUrl: 'https://images.unsplash.com/photo-1580481077195-c3a8a37f714b?w=700&auto=format&fit=crop&q=80',
-        imageSvg: `<svg width="100%" height="100%" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="320" height="180" fill="#F1F5F9"/>
-            <path d="M140 30 C140 25, 180 25, 180 30 L176 80 L144 80 Z" fill="#334155"/>
-            <rect x="135" y="80" width="50" height="12" rx="4" fill="#1E293B"/>
-            <rect x="156" y="92" width="8" height="45" fill="#64748B"/>
-            <line x1="160" y1="137" x2="135" y2="155" stroke="#475569" stroke-width="6" stroke-linecap="round"/>
-            <line x1="160" y1="137" x2="185" y2="155" stroke="#475569" stroke-width="6" stroke-linecap="round"/>
-        </svg>`
+        imageUrl: 'https://images.unsplash.com/photo-1580481077195-c3a8a37f714b?w=700&auto=format&fit=crop&q=80'
     },
     {
         id: 4,
         name: 'NovaCraft Pro Wireless Keyboard',
         category: 'Periféricos',
-        desc: 'Teclado mecánico custom inalámbrico 75% con chasis de aluminio CNC, switches lubricados de fábrica e insonorización por capas.',
+        desc: 'Teclado mecánico custom inalámbrico 75% con chasis de aluminio CNC, switches lineales lubricados e insonorización.',
         sentiment: 'positive',
         score: 93,
         rating: 4.8,
         reviewsCount: 312,
         sentimentBreakdown: { pos: 93, neu: 5, neg: 2 },
         price: '$235.00',
-        imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=700&auto=format&fit=crop&q=80',
-        imageSvg: `<svg width="100%" height="100%" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="320" height="180" fill="#0F172A"/>
-            <rect x="45" y="45" width="230" height="90" rx="8" fill="#1E293B" stroke="#334155" stroke-width="2"/>
-            <rect x="55" y="55" width="210" height="70" rx="4" fill="#0F172A"/>
-            <circle cx="80" cy="75" r="5" fill="#38BDF8"/>
-            <circle cx="100" cy="75" r="5" fill="#38BDF8"/>
-            <circle cx="120" cy="75" r="5" fill="#38BDF8"/>
-            <circle cx="140" cy="75" r="5" fill="#38BDF8"/>
-            <rect x="110" y="105" width="100" height="10" rx="3" fill="#38BDF8"/>
-        </svg>`
+        imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=700&auto=format&fit=crop&q=80'
     },
     {
         id: 5,
@@ -105,13 +66,7 @@ let products = [
         reviewsCount: 64,
         sentimentBreakdown: { pos: 42, neu: 16, neg: 42 },
         price: '$189.00',
-        imageUrl: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=700&auto=format&fit=crop&q=80',
-        imageSvg: `<svg width="100%" height="100%" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="320" height="180" fill="#1E293B"/>
-            <rect x="145" y="30" width="30" height="60" rx="15" fill="#475569" stroke="#94A3B8" stroke-width="2"/>
-            <rect x="156" y="90" width="8" height="40" fill="#94A3B8"/>
-            <circle cx="160" cy="145" r="22" stroke="#94A3B8" stroke-width="4" fill="none"/>
-        </svg>`
+        imageUrl: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=700&auto=format&fit=crop&q=80'
     },
     {
         id: 6,
@@ -124,15 +79,19 @@ let products = [
         reviewsCount: 194,
         sentimentBreakdown: { pos: 86, neu: 9, neg: 5 },
         price: '$349.00',
-        imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700&auto=format&fit=crop&q=80',
-        imageSvg: `<svg width="100%" height="100%" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="320" height="180" fill="#F8FAFC"/>
-            <path d="M110 90 A 50 50 0 0 1 210 90" stroke="#1E293B" stroke-width="8" fill="none" stroke-linecap="round"/>
-            <rect x="95" y="80" width="22" height="45" rx="10" fill="#334155"/>
-            <rect x="203" y="80" width="22" height="45" rx="10" fill="#334155"/>
-        </svg>`
+        imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700&auto=format&fit=crop&q=80'
     }
 ];
+
+// User session state
+let currentUser = {
+    name: 'Isaac E.',
+    email: 'isaac.dev@enterprise.com',
+    company: 'NovaTech Corp',
+    role: 'Cliente Corporativo (E-commerce)',
+    isLoggedIn: true,
+    ordersCount: 4
+};
 
 // User submitted reviews state
 let userReviewsHistory = [
@@ -142,47 +101,103 @@ let userReviewsHistory = [
         comment: 'La nitidez y reproducción cromática son impecables para flujos de diseño y desarrollo continuo.',
         detectedSentiment: 'Positivo (98%)',
         date: 'Hace 2 horas'
+    },
+    {
+        productName: 'NovaCraft Pro Wireless Keyboard',
+        rating: 5,
+        comment: 'El acabado en aluminio mecanizado y la respuesta acústica superaron mis expectativas.',
+        detectedSentiment: 'Positivo (95%)',
+        date: 'Ayer'
     }
+];
+
+// Simulated purchases
+let userOrders = [
+    { id: 'ORD-8941', product: 'Aura Studio Master II 32" Display', date: '14 Sep 2026', total: '$1,490.00', status: 'Entregado' },
+    { id: 'ORD-8920', product: 'NovaCraft Pro Wireless Keyboard', date: '10 Sep 2026', total: '$235.00', status: 'Entregado' },
+    { id: 'ORD-8874', product: 'Strata ErgoMotion Dual Desk Frame', date: '28 Ago 2026', total: '$820.00', status: 'Entregado' }
 ];
 
 let currentFilter = 'all';
 let currentSearch = '';
+let currentView = 'catalog'; // 'catalog' | 'profile'
+
+// Fallback SVGs cleanly handled in JS
+const fallbackSvgs = {
+    'Monitores': `<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+    'Mobiliario': `<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><rect x="4" y="6" width="16" height="4" rx="1"/><line x1="6" y1="10" x2="6" y2="20"/><line x1="18" y1="10" x2="18" y2="20"/></svg>`,
+    'Periféricos': `<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="6" y1="10" x2="6.01" y2="10"/><line x1="10" y1="10" x2="10.01" y2="10"/><line x1="14" y1="10" x2="14.01" y2="10"/><line x1="18" y1="10" x2="18.01" y2="10"/><line x1="7" y1="15" x2="17" y2="15"/></svg>`,
+    'Audio': `<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>`
+};
 
 // DOM Initialization
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Eswick - User Frontend App Ready');
-    initApp();
-    setupNavEvents();
+    renderAuthArea();
+    renderProducts();
 });
 
-function initApp() {
-    renderProducts();
+// View switcher
+window.switchView = function(view) {
+    currentView = view;
+    
+    const catalogSection = document.getElementById('catalog-section');
+    const profileSection = document.getElementById('profile-section');
+    const metricsBar = document.getElementById('metrics-bar');
+    const navCatalog = document.getElementById('nav-catalog');
+    const navProfile = document.getElementById('nav-profile');
+
+    if (view === 'catalog') {
+        catalogSection.style.display = 'block';
+        profileSection.style.display = 'none';
+        metricsBar.style.display = 'grid';
+        navCatalog.classList.add('active');
+        navProfile.classList.remove('active');
+        renderProducts();
+    } else {
+        catalogSection.style.display = 'none';
+        profileSection.style.display = 'block';
+        metricsBar.style.display = 'none';
+        navCatalog.classList.remove('active');
+        navProfile.classList.add('active');
+        renderProfileView();
+    }
+};
+
+// Auth Rendering
+function renderAuthArea() {
+    const authContainer = document.getElementById('auth-area');
+    if (!authContainer) return;
+
+    if (currentUser.isLoggedIn) {
+        authContainer.innerHTML = `
+            <div class="user-pill">
+                <span class="user-avatar-mini">${currentUser.name.charAt(0)}</span>
+                <span>${currentUser.name}</span>
+                <button class="btn-logout-link" onclick="window.handleLogout()" title="Cerrar Sesión">(Salir)</button>
+            </div>
+        `;
+    } else {
+        authContainer.innerHTML = `
+            <button class="btn btn-primary btn-sm" onclick="window.openLoginModal()">Iniciar Sesión</button>
+        `;
+    }
 }
 
-function setupNavEvents() {
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach((link, index) => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            navLinks.forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-            
-            if (index === 1) {
-                // Mis Evaluaciones
-                openMyReviewsModal();
-            } else {
-                // Catálogo Enterprise
-                filterBySentiment('all');
-            }
-        });
-    });
-}
+window.handleLogout = function() {
+    currentUser.isLoggedIn = false;
+    renderAuthArea();
+    if (currentView === 'profile') {
+        renderProfileView();
+    }
+    window.showToast('ℹ️ Sesión cerrada.');
+};
 
+// Render Products Catalog (RF-01)
 function renderProducts() {
     const grid = document.getElementById('product-grid');
     if (!grid) return;
 
-    // Filter by sentiment and search keyword
     const filtered = products.filter(p => {
         let matchesSentiment = true;
         if (currentFilter === 'positive') matchesSentiment = p.sentiment === 'positive';
@@ -227,9 +242,9 @@ function renderProducts() {
 
         html += `
             <article class="product-card slide-up ${delayClass}">
-                <div class="product-image-container">
+                <div class="product-image-container" id="img-container-${product.id}">
                     <span class="product-category-tag">${product.category}</span>
-                    <img src="${product.imageUrl}" alt="${product.name}" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\\'product-category-tag\\'>${product.category}</span>' + \`${product.imageSvg}\`;" />
+                    <img src="${product.imageUrl}" alt="${product.name}" loading="lazy" onerror="window.handleImageError(this, '${product.category}')" />
                 </div>
                 <div class="product-details">
                     <div class="product-meta-header">
@@ -259,7 +274,7 @@ function renderProducts() {
 
                     <div class="product-footer">
                         <span class="product-price">${product.price}</span>
-                        <button class="btn btn-primary" onclick="window.openReviewModal(${product.id}, '${escapeHtml(product.name)}')">Evaluar (RF-02)</button>
+                        <button class="btn btn-primary" onclick="window.openReviewModal(${product.id}, '${escapeHtml(product.name)}')">Evaluar</button>
                     </div>
                 </div>
             </article>
@@ -269,11 +284,123 @@ function renderProducts() {
     grid.innerHTML = html;
 }
 
+// Clean error handler for images
+window.handleImageError = function(imgElement, category) {
+    const parent = imgElement.parentElement;
+    if (parent) {
+        const fallback = fallbackSvgs[category] || fallbackSvgs['Monitores'];
+        parent.innerHTML = `<span class="product-category-tag">${category}</span>${fallback}`;
+    }
+};
+
+// Render Profile & Purchases View
+function renderProfileView() {
+    const container = document.getElementById('profile-section');
+    if (!container) return;
+
+    if (!currentUser.isLoggedIn) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 4rem 1rem; max-width: 480px; margin: 0 auto;">
+                <div style="font-size: 3rem; margin-bottom: var(--space-md);">🔒</div>
+                <h3 style="font-size: 1.5rem; margin-bottom: var(--space-sm);">Inicia sesión en tu cuenta</h3>
+                <p style="color: var(--color-text-muted); margin-bottom: var(--space-lg);">Debes ingresar como cliente para visualizar tus pedidos y opiniones registradas en el e-commerce.</p>
+                <button class="btn btn-primary" onclick="window.openLoginModal()">Iniciar Sesión</button>
+            </div>
+        `;
+        return;
+    }
+
+    let reviewsHtml = '';
+    if (userReviewsHistory.length === 0) {
+        reviewsHtml = '<p style="color: var(--color-text-muted);">No has emitido evaluaciones todavía.</p>';
+    } else {
+        userReviewsHistory.forEach(r => {
+            reviewsHtml += `
+                <div class="reviews-history-item">
+                    <div class="reviews-history-header">
+                        <span class="reviews-history-product">${r.productName}</span>
+                        <span style="color: #f59e0b; font-weight: 600;">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+                    </div>
+                    <p class="reviews-history-text">"${r.comment}"</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.75rem; color: var(--color-text-muted);">
+                        <span>Telemetría PLN detectada: <strong>${r.detectedSentiment}</strong></span>
+                        <span>${r.date}</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    let ordersHtml = '';
+    userOrders.forEach(o => {
+        ordersHtml += `
+            <div class="order-item-card">
+                <div>
+                    <div class="order-item-title">${o.product}</div>
+                    <div class="order-item-date">Pedido: ${o.id} • ${o.date}</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-weight: 700; font-size: 0.9375rem;">${o.total}</div>
+                    <span class="badge badge-sentiment-positive" style="font-size: 0.7rem; padding: 1px 6px;">${o.status}</span>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = `
+        <!-- Role clarification banner -->
+        <div class="role-banner">
+            <div class="role-banner-icon">ℹ️</div>
+            <div>
+                <div class="role-banner-title">Dominio de Usuario: Cliente del E-commerce</div>
+                <div class="role-banner-desc">Esta interfaz representa la experiencia del comprador final en la tienda corporativa. Las opiniones que registres aquí alimentan los modelos de PLN de la <strong>Plataforma de Análisis de Sentimientos</strong> (cuya gestión corresponde al rol de Administrador/Analista).</div>
+            </div>
+        </div>
+
+        <div class="profile-grid-layout">
+            <!-- Columna Izquierda: Información de Perfil -->
+            <div>
+                <div class="profile-card-box">
+                    <div class="profile-avatar-large">${currentUser.name.charAt(0)}</div>
+                    <div class="profile-name">${currentUser.name}</div>
+                    <div class="profile-email">${currentUser.email}</div>
+                    <span class="profile-role-tag">${currentUser.role}</span>
+                    
+                    <div class="profile-meta-item">
+                        <span class="profile-meta-label">Organización</span>
+                        <span class="profile-meta-val">${currentUser.company}</span>
+                    </div>
+                    <div class="profile-meta-item">
+                        <span class="profile-meta-label">Pedidos Registrados</span>
+                        <span class="profile-meta-val">${userOrders.length}</span>
+                    </div>
+                    <div class="profile-meta-item">
+                        <span class="profile-meta-label">Evaluaciones Emitidas</span>
+                        <span class="profile-meta-val">${userReviewsHistory.length}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Pedidos y Evaluaciones -->
+            <div>
+                <div class="profile-card-box">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: var(--space-md);">Historial de Compras Recientes</h3>
+                    ${ordersHtml}
+                </div>
+
+                <div class="profile-card-box">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: var(--space-md);">Mis Evaluaciones y Telemetría Emitida</h3>
+                    ${reviewsHtml}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
 // Global Filter Handlers
 window.filterBySentiment = function(type) {
     currentFilter = type;
     
-    // Update active class on buttons
     const pills = document.querySelectorAll('.filter-pill');
     pills.forEach(pill => pill.classList.remove('active'));
     
@@ -298,8 +425,80 @@ window.resetFilters = function() {
     window.filterBySentiment('all');
 };
 
+// Login Modal View
+window.openLoginModal = function() {
+    const modalContainer = document.getElementById('modal-container');
+    
+    const modalHtml = `
+        <div id="login-modal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 440px;">
+                <div class="modal-header">
+                    <h3>Acceso a SentimentStore</h3>
+                    <p>Inicia sesión como cliente para interactuar y enviar evaluaciones al motor de análisis.</p>
+                </div>
+                
+                <div class="login-presets">
+                    <div class="preset-login-btn" onclick="window.performPresetLogin('Isaac E.', 'isaac.dev@enterprise.com', 'NovaTech Corp')">
+                        <div>
+                            <div class="preset-user-name">👤 Isaac E. (Cliente Corporativo)</div>
+                            <div class="preset-user-role">NovaTech Corp • isaac.dev@enterprise.com</div>
+                        </div>
+                        <span class="badge badge-sentiment-positive">Entrar</span>
+                    </div>
+
+                    <div class="preset-login-btn" onclick="window.performPresetLogin('Dra. Valenzuela', 'valenzuela@labs.io', 'Biotech Labs')">
+                        <div>
+                            <div class="preset-user-name">👤 Dra. Valenzuela (Cliente)</div>
+                            <div class="preset-user-role">Biotech Labs • valenzuela@labs.io</div>
+                        </div>
+                        <span class="badge badge-sentiment-positive">Entrar</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: var(--space-lg); padding: var(--space-sm); background: #f8fafc; border-radius: var(--radius-sm); font-size: 0.75rem; color: var(--color-text-muted); border: 1px solid var(--color-border);">
+                    💡 <em>Nota de Arquitectura:</em> Los administradores de la plataforma analizan estas métricas desde el Dashboard de Analítica PLN interno.
+                </div>
+                
+                <div class="modal-actions" style="margin-top: var(--space-lg);">
+                    <button type="button" class="btn btn-ghost" onclick="window.closeModal('login-modal')">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    modalContainer.innerHTML = modalHtml;
+    setTimeout(() => {
+        const modal = document.getElementById('login-modal');
+        if (modal) modal.classList.add('active');
+    }, 10);
+};
+
+window.performPresetLogin = function(name, email, company) {
+    currentUser = {
+        name: name,
+        email: email,
+        company: company,
+        role: 'Cliente Corporativo (E-commerce)',
+        isLoggedIn: true,
+        ordersCount: 3
+    };
+
+    window.closeModal('login-modal');
+    renderAuthArea();
+    if (currentView === 'profile') {
+        renderProfileView();
+    }
+    window.showToast(`👋 Bienvenido de nuevo, <strong>${name}</strong>.`);
+};
+
 // RF-02: Review & Sentiment Evaluation Modal
 window.openReviewModal = function(productId, productName) {
+    if (!currentUser.isLoggedIn) {
+        window.openLoginModal();
+        window.showToast('ℹ️ Por favor inicia sesión como cliente para evaluar el producto.');
+        return;
+    }
+
     const modalContainer = document.getElementById('modal-container');
     
     const modalHtml = `
@@ -313,7 +512,7 @@ window.openReviewModal = function(productId, productName) {
                 
                 <form id="review-form" onsubmit="window.submitReview(event, ${productId}, '${escapeHtml(productName)}')">
                     <div class="form-group">
-                        <label class="form-label">Calificación Cuantitativa (RF-02)</label>
+                        <label class="form-label">Calificación Cuantitativa</label>
                         <div class="star-rating">
                             <input type="radio" id="star5" name="rating" value="5" required />
                             <label for="star5" title="5 estrellas">★</label>
@@ -340,7 +539,7 @@ window.openReviewModal = function(productId, productName) {
                     </div>
                     
                     <div class="modal-actions">
-                        <button type="button" class="btn btn-ghost" onclick="window.closeModal()">Cancelar</button>
+                        <button type="button" class="btn btn-ghost" onclick="window.closeModal('review-modal')">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Registrar Evaluación</button>
                     </div>
                 </form>
@@ -389,8 +588,8 @@ window.simulateSentimentAnalysis = function(text) {
     }
 };
 
-window.closeModal = function() {
-    const modal = document.getElementById('review-modal');
+window.closeModal = function(modalId = 'review-modal') {
+    const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.remove('active');
         setTimeout(() => {
@@ -409,12 +608,11 @@ window.submitReview = function(e, productId, productName) {
     const ratingVal = ratingInput ? parseInt(ratingInput.value) : 5;
     const commentVal = commentInput ? commentInput.value.trim() : '';
 
-    // Determine sentiment for local mock update
     let detectedTag = 'Positivo (95%)';
     if (ratingVal <= 2) detectedTag = 'Crítico (88%)';
     else if (ratingVal === 3) detectedTag = 'Neutral (72%)';
 
-    // Store in history
+    // Store in user history
     userReviewsHistory.unshift({
         productName: productName,
         rating: ratingVal,
@@ -434,60 +632,9 @@ window.submitReview = function(e, productId, productName) {
         }
     }
 
-    window.closeModal();
+    window.closeModal('review-modal');
     window.showToast(`✅ Evaluación registrada exitosamente para <strong>${productName}</strong>.`);
     renderProducts();
-};
-
-// Modal for "Mis Evaluaciones"
-window.openMyReviewsModal = function() {
-    const modalContainer = document.getElementById('modal-container');
-    
-    let listHtml = '';
-    if (userReviewsHistory.length === 0) {
-        listHtml = '<p style="color: var(--color-text-muted); text-align: center; padding: var(--space-lg);">Aún no has registrado evaluaciones.</p>';
-    } else {
-        userReviewsHistory.forEach(item => {
-            listHtml += `
-                <div class="reviews-history-item">
-                    <div class="reviews-history-header">
-                        <span class="reviews-history-product">${item.productName}</span>
-                        <span style="color: #f59e0b; font-weight: 600;">${'★'.repeat(item.rating)}${'☆'.repeat(5 - item.rating)}</span>
-                    </div>
-                    <p class="reviews-history-text">"${item.comment}"</p>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.75rem; color: var(--color-text-muted);">
-                        <span>Sentimiento clasificado: <strong>${item.detectedSentiment}</strong></span>
-                        <span>${item.date}</span>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    const modalHtml = `
-        <div id="review-modal" class="modal-overlay">
-            <div class="modal-content" style="max-width: 580px;">
-                <div class="modal-header">
-                    <h3>Mis Evaluaciones Registradas</h3>
-                    <p>Historial de retroalimentación analizada por la plataforma de análisis de sentimientos.</p>
-                </div>
-                
-                <div style="max-height: 360px; overflow-y: auto; padding-right: 4px;">
-                    ${listHtml}
-                </div>
-                
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-primary" onclick="window.closeModal()">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    `;
-
-    modalContainer.innerHTML = modalHtml;
-    setTimeout(() => {
-        const modal = document.getElementById('review-modal');
-        if (modal) modal.classList.add('active');
-    }, 10);
 };
 
 window.showToast = function(message) {

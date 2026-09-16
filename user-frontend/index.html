@@ -19,20 +19,26 @@
 <body>
     <header class="app-header">
         <div class="container">
-            <h1 class="logo">SentimentStore</h1>
+            <div class="logo-area">
+                <h1 class="logo" onclick="window.switchView('catalog')" style="cursor: pointer;">SentimentStore</h1>
+                <span class="store-badge">E-commerce Mockup</span>
+            </div>
             <nav class="nav-menu">
-                <a href="#" class="nav-link active">Catálogo Enterprise</a>
-                <a href="#" class="nav-link">Mis Evaluaciones</a>
+                <a href="#" id="nav-catalog" class="nav-link active" onclick="window.switchView('catalog')">Catálogo de Productos</a>
+                <a href="#" id="nav-profile" class="nav-link" onclick="window.switchView('profile')">Mi Perfil & Compras</a>
             </nav>
+            <div class="auth-area" id="auth-area">
+                <!-- Auth status rendered via JS -->
+            </div>
         </div>
     </header>
 
     <main class="container main-content">
-        <!-- Dashboard Summary Bar -->
-        <section class="metrics-bar fade-in">
+        <!-- Dashboard Summary Bar (E-commerce telemetry) -->
+        <section class="metrics-bar fade-in" id="metrics-bar">
             <div class="metric-card">
-                <span class="metric-label">Productos Monitoreados</span>
-                <span class="metric-value">6 Catálogos</span>
+                <span class="metric-label">Productos en Catálogo</span>
+                <span class="metric-value">6 Artículos</span>
             </div>
             <div class="metric-card">
                 <span class="metric-label">Sentimiento Global</span>
@@ -43,17 +49,18 @@
                 <span class="metric-value">1,056 Registradas</span>
             </div>
             <div class="metric-card">
-                <span class="metric-label">Estado del Modelo</span>
-                <span class="metric-value text-primary"><span class="pulse-dot"></span> Activo (RF-01 / RF-02)</span>
+                <span class="metric-label">Estado de Telemetría</span>
+                <span class="metric-value text-primary"><span class="pulse-dot"></span> Sincronizado</span>
             </div>
         </section>
 
-        <section class="catalog-section">
+        <!-- View 1: Catalog Section -->
+        <section id="catalog-section" class="catalog-section">
             <div class="section-header fade-in">
                 <div class="header-row">
                     <div>
                         <h2>Hardware & Dispositivos de Trabajo</h2>
-                        <p>Catálogo corporativo con análisis de satisfacción y retroalimentación de clientes en tiempo real.</p>
+                        <p>Catálogo corporativo para pruebas de captura de reseñas y telemetría de satisfacción.</p>
                     </div>
                     <div class="search-box">
                         <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -76,9 +83,14 @@
                 <!-- Products injected via JS -->
             </div>
         </section>
+
+        <!-- View 2: Profile & User Activity Section -->
+        <section id="profile-section" class="profile-section fade-in" style="display: none;">
+            <!-- Profile content injected via JS -->
+        </section>
     </main>
 
-    <!-- Contenedor del Modal de Reseñas -->
+    <!-- Contenedor del Modal (Login y Reseñas) -->
     <div id="modal-container"></div>
     
     <!-- Contenedor de Toasts -->
