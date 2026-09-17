@@ -11,3 +11,12 @@ Diagramas/
 .DS_Store
 Thumbs.db
 *.log
+# Entornos virtuales de Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Variables de entorno sensibles
+.env
