@@ -3,7 +3,7 @@
 // Implementa el patrón Service Adapter con soporte Híbrido (Backend Real + Fallback Resiliente)
 
 const API_CONFIG = {
-    baseUrl: 'http://localhost:8000/api', // URL base configurable para FastAPI / Node / Python
+    baseUrl: 'http://localhost:8000',     // URL base para FastAPI
     timeoutMs: 2500,                      // Timeout rápido para conmutar a mock si el servidor está apagado
     useMockFallback: true                 // Garantiza funcionamiento 100% resiliente en demos locales
 };
@@ -259,10 +259,10 @@ window.ApiService = {
             const res = await this._fetchWithTimeout('/reviews', {
                 method: 'POST',
                 body: JSON.stringify({
-                    productId,
-                    rating,
-                    comment,
-                    userEmail
+                    product_id: String(productId),
+                    customer_id: userEmail || null,
+                    raw_text: comment,
+                    rating: parseInt(rating)
                 })
             });
             if (res.ok) {
