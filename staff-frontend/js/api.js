@@ -328,16 +328,31 @@ const StaffApiService = {
         };
     },
 
-    // 3. Obtener Live Stream de Reseñas Analizadas (RF-03)
     async getReviewsLiveFeed(filter = {}) {
         try {
-            const res = await this._fetchWithTimeout('/api/admin/reviews/live-feed', { method: 'GET' });
+            const res = await this._fetchWithTimeout('/reviews/analyzed', { method: 'GET' });
             if (res.ok) {
-                const data = await res.json();
+                const rawData = await res.json();
+                // Map the backend structure to the UI structure
+                const data = rawData.map(r => ({
+                    id: r.review_id,
+                    productId: r.producto_id,
+                    productName: `Producto #${r.producto_id}`, // Fallback if name is not returned
+                    customerMasked: 'Cliente Anonimizado', 
+                    rating: r.rating || 3,
+                    sentiment: r.sentimiento ? r.sentimiento.toLowerCase() : 'neutral',
+                    confidence: r.puntaje ? Math.round(r.puntaje * 100) : (r.confianza === 'alta' ? 95 : 75),
+                    text: 'Reseña procesada y extraída. Detalles en base de datos.', // We don't return raw text for privacy
+                    topics: r.temas || [],
+                    date: 'Reciente',
+                    resolved: false,
+                    notifiedSlack: false,
+                    resolutionNote: ''
+                }));
                 return { success: true, data: data, source: 'remote' };
             }
         } catch (err) {
-            console.info('[StaffApiService] Live Feed suministrado desde memoria local.');
+            console.info('[StaffApiService] Live Feed suministrado desde memoria local.', err);
         }
 
         let feed = [...staffReviewsLiveFeed];
