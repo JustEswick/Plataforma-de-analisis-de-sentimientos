@@ -1,6 +1,6 @@
 // api.js
 // Staff Service Adapter Layer (Capa de Servicios de Red para Frontend Staff)
-// Conexión con FastAPI (:8000) y Mock Resiliente para Demos Offline
+// NexWork Systems - Conexión con FastAPI (:8000) y Mock Resiliente para Demos Offline
 
 const STAFF_API_CONFIG = {
     baseUrl: 'http://localhost:8000',
@@ -8,7 +8,7 @@ const STAFF_API_CONFIG = {
     useMockFallback: true
 };
 
-// Catálogo base compartido con Frontend Usuario (Single Source of Truth en local)
+// Catálogo base compartido con Frontend Usuario (NexWork Systems)
 let staffCatalogState = [
     {
         id: 1,
@@ -23,7 +23,7 @@ let staffCatalogState = [
         reviewsCount: 248,
         sentimentBreakdown: { pos: 96, neu: 3, neg: 1 },
         topIssue: 'Claridad cromática óptima y fidelidad 6K impecable.',
-        riskTier: 'Low / Safe',
+        riskTier: 'Bajo Riesgo / Seguro',
         imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=700&auto=format&fit=crop&q=80'
     },
     {
@@ -39,7 +39,7 @@ let staffCatalogState = [
         reviewsCount: 142,
         sentimentBreakdown: { pos: 88, neu: 8, neg: 4 },
         topIssue: 'Excelente estabilidad en elevación máxima.',
-        riskTier: 'Low / Safe',
+        riskTier: 'Bajo Riesgo / Seguro',
         imageUrl: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=700&auto=format&fit=crop&q=80'
     },
     {
@@ -55,7 +55,7 @@ let staffCatalogState = [
         reviewsCount: 96,
         sentimentBreakdown: { pos: 74, neu: 18, neg: 8 },
         topIssue: 'Tensión de reclinación algo rígida en primeras semanas.',
-        riskTier: 'Tier 2 / Observación',
+        riskTier: 'Moderado / En Observación',
         imageUrl: 'https://images.unsplash.com/photo-1505797149-43b0069ec26b?w=700&auto=format&fit=crop&q=80'
     },
     {
@@ -71,7 +71,7 @@ let staffCatalogState = [
         reviewsCount: 312,
         sentimentBreakdown: { pos: 93, neu: 5, neg: 2 },
         topIssue: 'Tacto acústico de switches muy elogiado.',
-        riskTier: 'Low / Safe',
+        riskTier: 'Bajo Riesgo / Seguro',
         imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=700&auto=format&fit=crop&q=80'
     },
     {
@@ -87,7 +87,7 @@ let staffCatalogState = [
         reviewsCount: 64,
         sentimentBreakdown: { pos: 42, neu: 16, neg: 42 },
         topIssue: 'Distorsión armónica y saturación en frecuencias superiores a 4kHz.',
-        riskTier: 'Tier 1 / Alerta Crítica',
+        riskTier: 'Alerta Crítica / Requiere Atención',
         imageUrl: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=700&auto=format&fit=crop&q=80'
     },
     {
@@ -103,7 +103,7 @@ let staffCatalogState = [
         reviewsCount: 194,
         sentimentBreakdown: { pos: 86, neu: 9, neg: 5 },
         topIssue: 'Aislamiento acústico sobresaliente en oficinas.',
-        riskTier: 'Low / Safe',
+        riskTier: 'Bajo Riesgo / Seguro',
         imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700&auto=format&fit=crop&q=80'
     },
     {
@@ -119,7 +119,7 @@ let staffCatalogState = [
         reviewsCount: 188,
         sentimentBreakdown: { pos: 95, neu: 4, neg: 1 },
         topIssue: 'Campo visual masivo sin distorsión en bordes.',
-        riskTier: 'Low / Safe',
+        riskTier: 'Bajo Riesgo / Seguro',
         imageUrl: 'https://images.unsplash.com/photo-1551645120-d70bfe84c826?w=700&auto=format&fit=crop&q=80'
     },
     {
@@ -135,7 +135,7 @@ let staffCatalogState = [
         reviewsCount: 206,
         sentimentBreakdown: { pos: 91, neu: 7, neg: 2 },
         topIssue: 'Iluminación confortable sin deslumbramientos.',
-        riskTier: 'Low / Safe',
+        riskTier: 'Bajo Riesgo / Seguro',
         imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=700&auto=format&fit=crop&q=80'
     },
     {
@@ -151,25 +151,27 @@ let staffCatalogState = [
         reviewsCount: 140,
         sentimentBreakdown: { pos: 98, neu: 2, neg: 0 },
         topIssue: 'Textura suave y alta resistencia a derrames.',
-        riskTier: 'Low / Safe',
+        riskTier: 'Bajo Riesgo / Seguro',
         imageUrl: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=700&auto=format&fit=crop&q=80'
     }
 ];
 
-// Feed inicial de reseñas analizadas por IA (Simulación del Feature Store / PostgreSQL)
+// Feed inicial de reseñas analizadas por IA
 let staffReviewsLiveFeed = [
     {
         id: 'REV-9021-1',
         productId: 5,
         productName: 'Apex Studio Condenser Mic & DSP',
-        customerMasked: 'J*** M. (Corporativo Verificado)',
+        customerMasked: 'J*** M. (Cliente Verificado)',
         rating: 1,
         sentiment: 'negative',
         confidence: 94,
         text: 'El micrófono presenta cortes continuos y distorsión armónica grave cuando se usa por USB-C. Inutilizable para locución profesional.',
         topics: ['#DistorsionAudio', '#FalloHardware', '#Saturacion'],
         date: 'Hace 12 minutos',
-        escalated: true
+        resolved: false,
+        notifiedSlack: false,
+        resolutionNote: ''
     },
     {
         id: 'REV-3104-1',
@@ -182,7 +184,9 @@ let staffReviewsLiveFeed = [
         text: 'El soporte lumbar es ergonómicamente excelente para jornadas de 8 horas, pero la palanca de reclinación viene excesivamente rígida.',
         topics: ['#Ergonomia', '#TensionReclinacion', '#Mecanismo'],
         date: 'Hace 45 minutos',
-        escalated: false
+        resolved: false,
+        notifiedSlack: false,
+        resolutionNote: ''
     },
     {
         id: 'REV-3201-1',
@@ -195,7 +199,9 @@ let staffReviewsLiveFeed = [
         text: 'Instalamos 40 unidades en nuestro estudio de postproducción. La fidelidad de color Delta-E y la nitidez 6K superaron expectativas.',
         topics: ['#Calidad6K', '#ColorCalibrado', '#FidelidadVisual'],
         date: 'Hace 1 hora',
-        escalated: false
+        resolved: false,
+        notifiedSlack: false,
+        resolutionNote: ''
     },
     {
         id: 'REV-9021-2',
@@ -208,7 +214,9 @@ let staffReviewsLiveFeed = [
         text: 'El soporte de brazo es sólido pero el procesamiento DSP interno genera un ruido estático de fondo molesto.',
         topics: ['#RuidoFondo', '#DSP', '#Audio'],
         date: 'Hace 2 horas',
-        escalated: true
+        resolved: false,
+        notifiedSlack: false,
+        resolutionNote: ''
     },
     {
         id: 'REV-2354-1',
@@ -221,7 +229,9 @@ let staffReviewsLiveFeed = [
         text: 'El chasis de aluminio y los switches lubricados dan una experiencia de escritura premium y silenciosa.',
         topics: ['#MecanicoCustom', '#Ergonomia', '#Teclado'],
         date: 'Hace 3 horas',
-        escalated: false
+        resolved: false,
+        notifiedSlack: false,
+        resolutionNote: ''
     }
 ];
 
@@ -263,7 +273,9 @@ const StaffApiService = {
         // Cálculo dinámico de métricas con base en el catálogo actual
         const totalReviews = staffCatalogState.reduce((acc, p) => acc + p.reviewsCount, 0);
         const avgScore = Math.round(staffCatalogState.reduce((acc, p) => acc + p.score, 0) / staffCatalogState.length);
-        const criticalIssues = staffReviewsLiveFeed.filter(r => r.sentiment === 'negative').length;
+        
+        // Solo contamos quejas críticas NO RESUELTAS
+        const activeCriticalIssues = staffReviewsLiveFeed.filter(r => r.sentiment === 'negative' && !r.resolved).length;
         
         return {
             success: true,
@@ -272,9 +284,9 @@ const StaffApiService = {
                 satisfactionDelta: '+2.3%',
                 totalReviewsProcessed: totalReviews,
                 aiAutomatedRate: '98.4%',
-                criticalComplaintsCount: criticalIssues,
+                criticalComplaintsCount: activeCriticalIssues,
                 slaRemaining: '< 2 hrs',
-                nlpEngineStatus: 'Azure OpenAI GPT-4o (Active)',
+                nlpEngineStatus: 'Azure OpenAI GPT-4o (Activo)',
                 avgLatencyMs: 142,
                 sentimentDistribution: {
                     positive: 76,
@@ -282,10 +294,10 @@ const StaffApiService = {
                     negative: 8
                 },
                 departmentBreakdown: [
-                    { name: 'Monitores', score: 96, sentiment: 'positive', status: 'Optimal' },
-                    { name: 'Mobiliario', score: 81, sentiment: 'positive', status: 'Healthy' },
-                    { name: 'Audio', score: 54, sentiment: 'negative', status: 'Flagged / Alert' },
-                    { name: 'Periféricos & Accesorios', score: 92, sentiment: 'positive', status: 'Optimal' }
+                    { name: 'Monitores', score: 96, sentiment: 'positive', status: 'Excelente' },
+                    { name: 'Mobiliario', score: 81, sentiment: 'positive', status: 'Saludable' },
+                    { name: 'Audio', score: 54, sentiment: 'negative', status: 'Alerta Activa' },
+                    { name: 'Periféricos & Accesorios', score: 92, sentiment: 'positive', status: 'Excelente' }
                 ]
             },
             source: 'mock'
@@ -336,6 +348,9 @@ const StaffApiService = {
             const q = filter.search.toLowerCase();
             feed = feed.filter(r => r.text.toLowerCase().includes(q) || r.productName.toLowerCase().includes(q));
         }
+        if (filter.unresolvedOnly) {
+            feed = feed.filter(r => !r.resolved);
+        }
 
         return {
             success: true,
@@ -344,7 +359,30 @@ const StaffApiService = {
         };
     },
 
-    // 4. Gestión CRUD: Listar Productos (RF-05)
+    // 4. Gestión de Alertas: Marcar Queja como Atendida / Resuelta (Seguimiento Oficial)
+    async resolveReviewAlert(reviewId, note = 'Atendida por moderador') {
+        const review = staffReviewsLiveFeed.find(r => r.id === reviewId);
+        if (!review) {
+            return { success: false, error: 'Reseña no encontrada' };
+        }
+
+        review.resolved = true;
+        review.resolutionNote = note;
+        return { success: true, data: review, message: 'Alerta marcada como atendida exitosamente' };
+    },
+
+    // 5. Gestión de Alertas: Notificar a Soporte / Slack (Observer Pattern)
+    async notifySupportSlack(reviewId) {
+        const review = staffReviewsLiveFeed.find(r => r.id === reviewId);
+        if (!review) {
+            return { success: false, error: 'Reseña no encontrada' };
+        }
+
+        review.notifiedSlack = true;
+        return { success: true, message: `Notificación enviada al canal #soporte-qa y correo para ${review.productName}` };
+    },
+
+    // 6. Gestión CRUD: Listar Productos (RF-05)
     async getProductsList() {
         try {
             const res = await this._fetchWithTimeout('/products', { method: 'GET' });
@@ -363,7 +401,7 @@ const StaffApiService = {
         };
     },
 
-    // 5. Gestión CRUD: Crear Nuevo Producto (RF-05)
+    // 7. Gestión CRUD: Crear Nuevo Producto (RF-05)
     async createProduct(productData) {
         try {
             const res = await this._fetchWithTimeout('/api/admin/products', {
@@ -391,8 +429,8 @@ const StaffApiService = {
             score: 100,
             reviewsCount: 0,
             sentimentBreakdown: { pos: 100, neu: 0, neg: 0 },
-            topIssue: 'Producto recién ingresado al catálogo.',
-            riskTier: 'Nuevo / Sin Reseñas',
+            topIssue: 'Producto nuevo en catálogo.',
+            riskTier: 'Bajo Riesgo / Seguro',
             imageUrl: productData.imageUrl || 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=700&auto=format&fit=crop&q=80'
         };
 
@@ -400,7 +438,7 @@ const StaffApiService = {
         return { success: true, data: newProduct, source: 'mock' };
     },
 
-    // 6. Gestión CRUD: Actualizar Producto Existente (RF-05)
+    // 8. Gestión CRUD: Actualizar Producto Existente (RF-05)
     async updateProduct(id, productData) {
         try {
             const res = await this._fetchWithTimeout(`/api/admin/products/${id}`, {
@@ -432,7 +470,7 @@ const StaffApiService = {
         return { success: true, data: staffCatalogState[index], source: 'mock' };
     },
 
-    // 7. Gestión CRUD: Activar / Desactivar Lógicamente (RF-05)
+    // 9. Gestión CRUD: Activar / Desactivar Lógicamente (RF-05)
     async toggleProductStatus(id) {
         try {
             const res = await this._fetchWithTimeout(`/api/admin/products/${id}/toggle-status`, { method: 'PATCH' });
@@ -451,14 +489,5 @@ const StaffApiService = {
 
         product.active = !product.active;
         return { success: true, data: product, source: 'mock' };
-    },
-
-    // 8. Escalar Alerta de Calidad / Moderación
-    async escalateProductIssue(productId, note = '') {
-        const product = staffCatalogState.find(p => p.id === parseInt(productId));
-        if (product) {
-            product.riskTier = 'Escalado a QA Lead';
-        }
-        return { success: true, message: `Alerta escalada para ${product ? product.name : 'producto'}` };
     }
 };

@@ -1,6 +1,6 @@
 // app.js
-// Controlador Principal del Frontend Staff
-// Orquestación de Vistas, Eventos, Modales y Gestión de Estado
+// NexWork Systems - Controlador Principal del Panel Administrativo (Staff)
+// Diseñado para alta accesibilidad y facilidad de uso por personal operativo
 
 document.addEventListener('DOMContentLoaded', () => {
     StaffApp.init();
@@ -11,6 +11,7 @@ const StaffApp = {
         activeTab: 'dashboard',
         selectedTimeRange: '24h',
         categoryFilter: 'all',
+        alertsFilter: 'unresolved',
         feedFilter: { sentiment: 'all', search: '' },
         currentMetrics: null,
         currentProducts: [],
@@ -44,14 +45,14 @@ const StaffApp = {
             });
         }
 
-        // Botón de Sincronizar Telemetría
+        // Botón de Sincronizar Datos
         const btnSyncTelemetry = document.getElementById('btnSyncTelemetry');
         if (btnSyncTelemetry) {
             btnSyncTelemetry.addEventListener('click', async () => {
                 btnSyncTelemetry.classList.add('loading');
                 await this.loadAllData();
                 btnSyncTelemetry.classList.remove('loading');
-                this.showToast('Telemetría y base de datos sincronizadas');
+                this.showToast('Datos sincronizados con la tienda en línea');
             });
         }
 
@@ -91,6 +92,15 @@ const StaffApp = {
             });
         }
 
+        // Filtros del Módulo de Alertas
+        const alertsStatusFilter = document.getElementById('alertsStatusFilter');
+        if (alertsStatusFilter) {
+            alertsStatusFilter.addEventListener('change', async (e) => {
+                this.state.alertsFilter = e.target.value;
+                await this.renderAlertsSection();
+            });
+        }
+
         // Filtros del Live Feed
         const feedSentimentFilter = document.getElementById('feedSentimentFilter');
         if (feedSentimentFilter) {
@@ -121,6 +131,7 @@ const StaffApp = {
     async loadAllData() {
         await Promise.all([
             this.refreshDashboard(),
+            this.renderAlertsSection(),
             this.renderProductsCrudTable(),
             this.renderLiveFeed()
         ]);
@@ -177,13 +188,20 @@ const StaffApp = {
         const elCriticalCount = document.getElementById('kpiCriticalCountVal');
         const elEngineStatus = document.getElementById('kpiEngineStatusVal');
         const elEngineLatency = document.getElementById('kpiEngineLatencyVal');
+        const elAlertBadgeCount = document.getElementById('alertBadgeCount');
 
         if (elSatisfaction) elSatisfaction.innerText = `${metrics.satisfactionScore}%`;
-        if (elSatisfactionDelta) elSatisfactionDelta.innerText = `${metrics.satisfactionDelta} vs prev`;
+        if (elSatisfactionDelta) elSatisfactionDelta.innerText = `${metrics.satisfactionDelta} vs semana anterior`;
         if (elTotalReviews) elTotalReviews.innerText = metrics.totalReviewsProcessed.toLocaleString();
         if (elCriticalCount) elCriticalCount.innerText = metrics.criticalComplaintsCount;
         if (elEngineStatus) elEngineStatus.innerText = metrics.nlpEngineStatus;
-        if (elEngineLatency) elEngineLatency.innerText = `${metrics.avgLatencyMs}ms latencia prom.`;
+        if (elEngineLatency) elEngineLatency.innerText = `${metrics.avgLatencyMs}ms tiempo de respuesta`;
+
+        // Actualizar el distintivo en la pestaña de Alertas
+        if (elAlertBadgeCount) {
+            elAlertBadgeCount.innerText = metrics.criticalComplaintsCount;
+            elAlertBadgeCount.style.display = metrics.criticalComplaintsCount > 0 ? 'inline-block' : 'none';
+        }
     },
 
     // 5. Renderizado de la Matriz de Riesgo y Calidad (RF-03)
@@ -206,12 +224,12 @@ const StaffApp = {
                     <td><code>${p.sku}</code></td>
                     <td>
                         <div style="font-weight: 600; color: var(--color-primary);">${p.name}</div>
-                        <div style="font-size: 0.72rem; color: var(--color-text-muted);">${p.desc.substring(0, 50)}...</div>
+                        <div style="font-size: 0.76rem; color: var(--color-text-muted);">${p.desc.substring(0, 50)}...</div>
                     </td>
                     <td>${p.category}</td>
                     <td>
                         <span class="badge-status-pill ${badgeClass}">
-                            ${p.score}% (${p.sentimentBreakdown.pos}% / ${p.sentimentBreakdown.neu}% / ${p.sentimentBreakdown.neg}%)
+                            ${p.score}% Aprobación
                         </span>
                     </td>
                     <td>
@@ -219,14 +237,14 @@ const StaffApp = {
                             ${p.riskTier}
                         </span>
                     </td>
-                    <td style="max-width: 260px; font-size: 0.78rem;">${p.topIssue}</td>
+                    <td style="max-width: 260px; font-size: 0.8rem;">${p.topIssue}</td>
                     <td>
                         ${isAlert ? `
-                            <button class="table-action-btn danger" onclick="StaffApp.handleEscalate(${p.id})">
-                                🚨 Escalar a QA
+                            <button class="table-action-btn danger" onclick="StaffApp.switchTab('alerts')">
+                                🚨 Ver Quejas Urgentes
                             </button>
                         ` : `
-                            <button class="table-action-btn" onclick="StaffApp.showToast('Monitoreo nominal para ${p.name}')">
+                            <button class="table-action-btn" onclick="StaffApp.showToast('Producto en estado nominal: ${p.name}')">
                                 Inspeccionar
                             </button>
                         `}
@@ -236,7 +254,82 @@ const StaffApp = {
         }).join('');
     },
 
-    // 6. Renderizado del Live Feed de Reseñas (RF-03)
+    // 6. Renderizado de la Sección de Alertas y Quejas (Seguimiento Oficial)
+    async renderAlertsSection() {
+        const container = document.getElementById('alertsListContainer');
+        if (!container) return;
+
+        const res = await StaffApiService.getReviewsLiveFeed({});
+        if (!res.success) return;
+
+        let negativeReviews = res.data.filter(r => r.sentiment === 'negative');
+
+        if (this.state.alertsFilter === 'unresolved') {
+            negativeReviews = negativeReviews.filter(r => !r.resolved);
+        } else if (this.state.alertsFilter === 'resolved') {
+            negativeReviews = negativeReviews.filter(r => r.resolved);
+        }
+
+        if (negativeReviews.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px; background: #F0FDFA; border: 1px solid #CCFBF1; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; margin-bottom: 8px;">🎉</div>
+                    <div style="font-weight: 700; color: #0F766E; font-size: 1rem;">¡Excelente! No hay alertas de emergencia pendientes por resolver.</div>
+                    <div style="color: #64748B; font-size: 0.84rem; margin-top: 4px;">Todas las quejas han sido atendidas o descartadas por el equipo de moderación.</div>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = negativeReviews.map(item => {
+            return `
+                <div class="feed-card ${item.resolved ? 'card-resolved' : 'highlight-critical'}">
+                    <div class="feed-card-top">
+                        <div class="feed-user-wrap">
+                            <span>🚨 Alerta de Calidad: <strong>${item.productName}</strong></span>
+                            <span style="font-size: 0.78rem; color: #64748B;">• Cliente: 🔒 ${item.customerMasked}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="badge-status-pill ${item.resolved ? 'resolved' : 'negative'}">
+                                ${item.resolved ? '✓ Caso Resuelto / Atendido' : '🚨 Pendiente por Atender'}
+                            </span>
+                            <span style="font-size: 0.75rem; color: var(--color-text-muted);">${item.date}</span>
+                        </div>
+                    </div>
+                    <div class="feed-comment-text" style="font-weight: 500;">
+                        "${item.text}"
+                    </div>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
+                        ${item.topics.map(t => `<span class="feed-tag-pill">${t}</span>`).join('')}
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--color-border);">
+                        <div style="font-size: 0.78rem; color: #475569;">
+                            ${item.notifiedSlack ? '✓ <strong>Notificación enviada al canal #soporte-qa y correo</strong>' : 'ℹ️ Notificación Push disponible para el equipo'}
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            ${!item.notifiedSlack ? `
+                                <button class="table-action-btn" onclick="StaffApp.handleNotifySlack('${item.id}')">
+                                    📢 Notificar a Soporte (Slack)
+                                </button>
+                            ` : ''}
+                            ${!item.resolved ? `
+                                <button class="table-action-btn danger" onclick="StaffApp.handlePauseProduct(${item.productId})">
+                                    ⏸️ Pausar Producto en Tienda
+                                </button>
+                                <button class="table-action-btn success" onclick="StaffApp.handleResolveAlert('${item.id}')">
+                                    ✓ Marcar como Atendida
+                                </button>
+                            ` : `
+                                <span style="font-size: 0.78rem; color: #059669; font-weight: 600;">✓ Caso Archivado</span>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    },
+
+    // 7. Renderizado del Live Feed de Reseñas (RF-03)
     async renderLiveFeed() {
         const container = document.getElementById('liveFeedContainer');
         if (!container) return;
@@ -249,7 +342,7 @@ const StaffApp = {
         if (res.data.length === 0) {
             container.innerHTML = `
                 <div style="text-align: center; padding: 32px; color: var(--color-text-muted);">
-                    No se encontraron reseñas con los filtros seleccionados.
+                    No se encontraron opiniones con los filtros seleccionados.
                 </div>
             `;
             return;
@@ -261,16 +354,16 @@ const StaffApp = {
             const stars = '★'.repeat(item.rating) + '☆'.repeat(5 - item.rating);
 
             return `
-                <div class="feed-card ${isCrit ? 'highlight-critical' : ''}">
+                <div class="feed-card ${isCrit ? (item.resolved ? 'card-resolved' : 'highlight-critical') : ''}">
                     <div class="feed-card-top">
                         <div class="feed-user-wrap">
                             <span>🔒 ${item.customerMasked}</span>
                             <span class="feed-product-title">↳ ${item.productName}</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="color: #F59E0B; font-size: 0.85rem;">${stars}</span>
-                            <span class="badge-status-pill ${badgeClass}">${item.sentiment.toUpperCase()} (${item.confidence}% conf.)</span>
-                            <span style="font-size: 0.72rem; color: var(--color-text-muted);">${item.date}</span>
+                            <span style="color: #F59E0B; font-size: 0.9rem;">${stars}</span>
+                            <span class="badge-status-pill ${badgeClass}">${item.sentiment === 'positive' ? 'Positivo' : (item.sentiment === 'neutral' ? 'Neutro' : 'Queja Crítica')}</span>
+                            <span style="font-size: 0.75rem; color: var(--color-text-muted);">${item.date}</span>
                         </div>
                     </div>
                     <div class="feed-comment-text">
@@ -280,9 +373,9 @@ const StaffApp = {
                         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                             ${item.topics.map(t => `<span class="feed-tag-pill">${t}</span>`).join('')}
                         </div>
-                        ${isCrit ? `
-                            <button class="table-action-btn danger" style="padding: 2px 8px; font-size: 0.72rem;" onclick="StaffApp.handleEscalate(${item.productId})">
-                                ${item.escalated ? '✓ Ticket Asignado' : 'Asignar a Soporte'}
+                        ${isCrit && !item.resolved ? `
+                            <button class="table-action-btn success" style="padding: 3px 8px; font-size: 0.74rem;" onclick="StaffApp.handleResolveAlert('${item.id}')">
+                                ✓ Resolver Queja
                             </button>
                         ` : ''}
                     </div>
@@ -291,7 +384,7 @@ const StaffApp = {
         }).join('');
     },
 
-    // 7. Renderizado del CRUD de Productos (RF-05)
+    // 8. Renderizado del CRUD de Productos (RF-05)
     async renderProductsCrudTable() {
         const tbody = document.getElementById('productsCrudTableBody');
         if (!tbody) return;
@@ -304,11 +397,11 @@ const StaffApp = {
                 <tr>
                     <td><code>${p.sku}</code></td>
                     <td>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <img src="${p.imageUrl}" alt="${p.name}" style="width: 36px; height: 36px; border-radius: 4px; object-fit: cover; border: 1px solid var(--color-border);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <img src="${p.imageUrl}" alt="${p.name}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover; border: 1px solid var(--color-border);">
                             <div>
                                 <div style="font-weight: 600; color: var(--color-primary);">${p.name}</div>
-                                <div style="font-size: 0.72rem; color: var(--color-text-muted);">${p.desc.substring(0, 40)}...</div>
+                                <div style="font-size: 0.74rem; color: var(--color-text-muted);">${p.desc.substring(0, 45)}...</div>
                             </div>
                         </div>
                     </td>
@@ -316,7 +409,7 @@ const StaffApp = {
                     <td class="tabular-nums" style="font-weight: 600;">${p.price}</td>
                     <td>
                         <span class="badge-status-pill ${p.active ? 'active' : 'inactive'}">
-                            ${p.active ? '● Activo' : '○ En Pausa'}
+                            ${p.active ? '● Disponible en Tienda' : '○ Pausado / Oculto'}
                         </span>
                     </td>
                     <td>
@@ -334,7 +427,7 @@ const StaffApp = {
         }).join('');
     },
 
-    // 8. Modales y Operaciones CRUD (RF-05)
+    // 9. Modales y Operaciones CRUD (RF-05)
     openAddProductModal() {
         const modal = document.getElementById('modalAddProduct');
         if (modal) {
@@ -359,7 +452,7 @@ const StaffApp = {
         if (res.success) {
             this.closeModal('modalAddProduct');
             await this.loadAllData();
-            this.showToast(`Producto "${productData.name}" añadido exitosamente.`);
+            this.showToast(`Producto "${productData.name}" añadido al catálogo.`);
         }
     },
 
@@ -403,20 +496,39 @@ const StaffApp = {
         const res = await StaffApiService.toggleProductStatus(id);
         if (res.success) {
             await this.renderProductsCrudTable();
-            this.showToast(`Estado del producto modificado a: ${res.data.active ? 'Activo' : 'En Pausa'}`);
+            this.showToast(`El producto ahora está: ${res.data.active ? 'Disponible en Tienda' : 'Pausado'}`);
         }
     },
 
-    async handleEscalate(productId) {
-        const res = await StaffApiService.escalateProductIssue(productId);
+    // 10. Acciones de Resolución de Alertas y Notificaciones (Descarte)
+    async handleResolveAlert(reviewId) {
+        const res = await StaffApiService.resolveReviewAlert(reviewId);
         if (res.success) {
-            await this.renderSentimentMatrix();
+            await this.refreshDashboard();
+            await this.renderAlertsSection();
             await this.renderLiveFeed();
-            this.showToast('🚨 Caso escalado inmediatamente al equipo de Control de Calidad.');
+            this.showToast('✓ Queja marcada como atendida. El contador de emergencias ha disminuido.');
         }
     },
 
-    // 9. Reporte PDF (RF-04)
+    async handleNotifySlack(reviewId) {
+        const res = await StaffApiService.notifySupportSlack(reviewId);
+        if (res.success) {
+            await this.renderAlertsSection();
+            this.showToast(res.message);
+        }
+    },
+
+    async handlePauseProduct(productId) {
+        const product = staffCatalogState.find(p => p.id === productId);
+        if (product && product.active) {
+            await StaffApiService.toggleProductStatus(productId);
+            await this.loadAllData();
+            this.showToast(`⚠️ Producto "${product.name}" pausado temporalmente en la tienda.`);
+        }
+    },
+
+    // 11. Reporte PDF (RF-04)
     openReportModal() {
         const modal = document.getElementById('modalReportPreview');
         const container = document.getElementById('reportPreviewContent');
@@ -436,7 +548,7 @@ const StaffApp = {
         }
     },
 
-    // 10. Notificaciones Toast
+    // 12. Notificaciones Toast
     showToast(message) {
         const container = document.getElementById('toastContainer');
         if (!container) return;
@@ -453,7 +565,7 @@ const StaffApp = {
         }, 3500);
     },
 
-    // 11. Polling Periódico para simular ingestión de eventos en vivo
+    // 13. Polling Periódico
     startAutoPolling() {
         setInterval(async () => {
             if (this.state.activeTab === 'dashboard' || this.state.activeTab === 'feed') {
