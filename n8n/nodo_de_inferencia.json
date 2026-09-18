@@ -2,6 +2,7 @@
   "name": "My workflow",
   "nodes": [
     {
+      "name": "Azure OpenAI Chat Model",
       "parameters": {
         "model": "gpt-4o",
         "options": {}
@@ -13,7 +14,6 @@
         -208
       ],
       "id": "48d00ca3-3bdc-410c-9158-3c1851f4223d",
-      "name": "Azure OpenAI Chat Model",
       "credentials": {
         "azureOpenAiApi": {
           "id": "GohY7D8nTswv9wby",
@@ -22,22 +22,29 @@
       }
     },
     {
+      "name": "RabbitMQ Trigger",
       "parameters": {
-        "httpMethod": "POST",
-        "path": "ab5e4982-53ca-44fc-9304-ffca7a875506",
-        "options": {}
+        "queue": "reviews_queue",
+        "options": {
+          "jsonParseBody": true
+        }
       },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2.1,
+      "type": "n8n-nodes-base.rabbitmqTrigger",
+      "typeVersion": 1,
       "position": [
         -1136,
         -416
       ],
       "id": "88da4244-5304-494e-a38d-fe078f2fda33",
-      "name": "Backned Input",
-      "webhookId": "ab5e4982-53ca-44fc-9304-ffca7a875506"
+      "credentials": {
+        "rabbitmq": {
+          "id": "sidtra-amqp",
+          "name": "RabbitMQ account"
+        }
+      }
     },
     {
+      "name": "Backend Output",
       "parameters": {
         "method": "POST",
         "url": "http://host.docker.internal:8000/reviews/analyzed",
@@ -52,8 +59,7 @@
         176,
         -416
       ],
-      "id": "1c7a1a02-832f-416c-afb2-1287e7feaccc",
-      "name": "Backend Output"
+      "id": "1c7a1a02-832f-416c-afb2-1287e7feaccc"
     },
     {
       "parameters": {
@@ -62,31 +68,31 @@
             {
               "id": "fef1242b-5f53-49cc-97cc-195c625938a6",
               "name": "prompt_input",
-              "value": "=Calificación: {{ $json.body.rating }} estrellas. Reseña: \"{{ $json.body.masked_text }}\"",
+              "value": "=Calificaci\u00f3n: {{ $json.rating }} estrellas. Rese\u00f1a: \"{{ $json.masked_text }}\"",
               "type": "string"
             },
             {
               "id": "4a04c60b-fa7d-4a78-8488-e8b1e89e2646",
               "name": "reviwe_id",
-              "value": "={{ $json.body.review_id }}",
+              "value": "={{ $json.review_id }}",
               "type": "string"
             },
             {
               "id": "21549af2-ca18-4ac4-9aae-6b7f88f4c0be",
               "name": "producto_id",
-              "value": "={{ $json.body.product_id }}",
+              "value": "={{ $json.product_id }}",
               "type": "string"
             },
             {
               "id": "56186565-78e8-444e-a47a-c3c48efc5516",
               "name": "=masked_text",
-              "value": "={{ $json.body.masked_text }}",
+              "value": "={{ $json.masked_text }}",
               "type": "string"
             },
             {
               "id": "eb208848-a8ef-4dd1-8153-d2762a31c10f",
               "name": "rating",
-              "value": "={{ $json.body.rating }}",
+              "value": "={{ $json.rating }}",
               "type": "string"
             }
           ]
@@ -103,6 +109,7 @@
       "name": "Datos de Entrada"
     },
     {
+      "name": "Datos de Salida",
       "parameters": {
         "assignments": {
           "assignments": [
@@ -164,15 +171,15 @@
         -80,
         -416
       ],
-      "id": "933d0a8d-03ad-4b07-9817-abb62c983580",
-      "name": "Datos de Salida"
+      "id": "933d0a8d-03ad-4b07-9817-abb62c983580"
     },
     {
+      "name": "Analizador de Sentimientos",
       "parameters": {
         "promptType": "define",
         "text": "={{ $json.prompt_input }}",
         "options": {
-          "systemMessage": "Eres un sistema experto en análisis de sentimientos para e-commerce.\nAnaliza la reseña y la calificación del cliente provistas en el mensaje.\nDebes responder ÚNICAMENTE con un objeto JSON válido (sin explicaciones adicionales, sin texto antes ni después, y sin bloques markdown ```json, solo las llaves { }):\n{\n  \"sentiment_label\": \"Positive\",\n  \"sentiment_score\": 0.90,\n  \"confidence\": 0.95,\n  \"extracted_topics\": [\"calidad\", \"envio\", \"precio\"]\n}\n\nReglas:\n- sentiment_label debe ser estrictamente uno de: \"Positive\", \"Negative\" o \"Neutral\".\n- sentiment_score debe ser un número decimal entre -1.0 (muy negativo) y 1.0 (muy positivo).\n- confidence debe ser un número decimal entre 0.0 y 1.0.\n- extracted_topics debe ser un arreglo de cadenas con los temas clave identificados (ej. calidad, empaque, atención, precio, entrega)."
+          "systemMessage": "Eres un sistema experto en an\u00e1lisis de sentimientos para e-commerce.\nAnaliza la rese\u00f1a y la calificaci\u00f3n del cliente provistas en el mensaje.\nDebes responder \u00daNICAMENTE con un objeto JSON v\u00e1lido (sin explicaciones adicionales, sin texto antes ni despu\u00e9s, y sin bloques markdown ```json, solo las llaves { }):\n{\n  \"sentiment_label\": \"Positive\",\n  \"sentiment_score\": 0.90,\n  \"confidence\": 0.95,\n  \"extracted_topics\": [\"calidad\", \"envio\", \"precio\"]\n}\n\nReglas:\n- sentiment_label debe ser estrictamente uno de: \"Positive\", \"Negative\" o \"Neutral\".\n- sentiment_score debe ser un n\u00famero decimal entre -1.0 (muy negativo) y 1.0 (muy positivo).\n- confidence debe ser un n\u00famero decimal entre 0.0 y 1.0.\n- extracted_topics debe ser un arreglo de cadenas con los temas clave identificados (ej. calidad, empaque, atenci\u00f3n, precio, entrega)."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -182,13 +189,13 @@
         -416
       ],
       "id": "d8bc5118-cb3b-446f-9ef4-cc1e2fe95964",
-      "name": "Analizador de Sentimientos",
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
       "onError": "continueErrorOutput"
     },
     {
+      "name": "Fallback AI",
       "parameters": {
         "assignments": {
           "assignments": [
@@ -250,10 +257,10 @@
         -80,
         -200
       ],
-      "id": "f328e323-fec7-472b-83a4-e17ab700b393",
-      "name": "Fallback AI"
+      "id": "f328e323-fec7-472b-83a4-e17ab700b393"
     },
     {
+      "name": "Es Negativo?",
       "parameters": {
         "conditions": {
           "options": {
@@ -282,15 +289,15 @@
         176,
         -600
       ],
-      "id": "e4abcb0b-b13e-42be-b3bd-4a95046d8f7f",
-      "name": "Es Negativo?"
+      "id": "e4abcb0b-b13e-42be-b3bd-4a95046d8f7f"
     },
     {
+      "name": "Alerta Staff",
       "parameters": {
         "fromEmail": "alerts@sidtra.com",
         "toEmail": "staff@sidtra.com",
-        "subject": "=Alerta Reseña Negativa: {{ $json.producto_id }}",
-        "text": "=Se detectó una reseña negativa.\\nID: {{ $json.review_id }}\\nPuntaje: {{ $json.puntaje }}",
+        "subject": "=Alerta Rese\u00f1a Negativa: {{ $json.producto_id }}",
+        "text": "=Se detect\u00f3 una rese\u00f1a negativa.\\nID: {{ $json.review_id }}\\nPuntaje: {{ $json.puntaje }}",
         "options": {}
       },
       "type": "n8n-nodes-base.emailSend",
@@ -299,8 +306,7 @@
         400,
         -600
       ],
-      "id": "74c9cd3e-4e22-4913-b5c1-969943ec92f4",
-      "name": "Alerta Staff"
+      "id": "74c9cd3e-4e22-4913-b5c1-969943ec92f4"
     }
   ],
   "pinData": {
@@ -320,7 +326,7 @@
           "body": {
             "rating": 5,
             "event_timestamp": "2026-09-18T03:42:43Z",
-            "masked_text": "El producto lleg� en perfecto estado y muy r�pido, excelente calidad de materiales.",
+            "masked_text": "El producto lleg\ufffd en perfecto estado y muy r\ufffdpido, excelente calidad de materiales.",
             "language": "es",
             "product_id": "PROD-TECH-101",
             "customer_id": "cust_vic_42",
@@ -360,17 +366,6 @@
           {
             "node": "Analizador de Sentimientos",
             "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Backned Input": {
-      "main": [
-        [
-          {
-            "node": "Datos de Entrada",
-            "type": "main",
             "index": 0
           }
         ]
@@ -442,6 +437,17 @@
           }
         ],
         []
+      ]
+    },
+    "RabbitMQ Trigger": {
+      "main": [
+        [
+          {
+            "node": "Datos de Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },

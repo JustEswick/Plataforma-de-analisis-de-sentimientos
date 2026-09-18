@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from fastapi import APIRouter, BackgroundTasks, Depends, Request, status
-from app.core.event_publisher import HttpWebhookPublisher, IEventPublisher
+from app.core.event_publisher import RabbitMQEventPublisher, IEventPublisher
 from app.schemas.review import ReviewAccepted, ReviewCreate
 from app.services.feature_engineering import extract_features
 from app.services.pii_masking import mask_pii
@@ -9,7 +9,7 @@ router = APIRouter(prefix="/reviews", tags=["Reviews"])
 
 def get_event_publisher() -> IEventPublisher:
     """Punto único de inyección de dependencias."""
-    return HttpWebhookPublisher()
+    return RabbitMQEventPublisher()
 
 async def _publish_review_ready(
     publisher: IEventPublisher,

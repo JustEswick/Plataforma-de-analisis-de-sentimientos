@@ -3,6 +3,8 @@ from typing import Any
 import httpx
 import os
 import logging
+import json
+import aio_pika
 
 logger = logging.getLogger(__name__)
 
@@ -42,3 +44,32 @@ class HttpWebhookPublisher(IEventPublisher):
                 logger.info(f"[{event_name}] publicado exitosamente en n8n.")
             except Exception as e:
                 logger.error(f"Error publicando [{event_name}] en n8n: {e}")
+
+class RabbitMQEventPublisher(IEventPublisher):
+    """
+    Despachador AMQP para emitir eventos asíncronos a RabbitMQ (Broker).
+    """
+    def __init__(self):
+        self.amqp_url = os.getenv("AMQP_URL", "amqp://guest:guest@localhost:5672/")
+        
+    async def publish(self, event_name: str, payload: dict[str, Any]) -> None:
+        try:
+            connection = await aio_pika.connect_robust(self.amqp_url)
+            async with connection:
+                channel = await connection.channel()
+                
+                # Declarar cola durable
+                queue = await channel.declare_queue("reviews_queue", durable=True)
+                
+                message = aio_pika.Message(
+                    body=json.dumps(payload).encode(),
+                    delivery_mode=aio_pika.DeliveryMode.PERSISTENT
+                )
+                
+                await channel.default_exchange.publish(
+                    message,
+                    routing_key="reviews_queue"
+                )
+                logger.info(f"[{event_name}] encolado exitosamente en RabbitMQ.")
+        except Exception as e:
+            logger.error(f"Error publicando [{event_name}] en RabbitMQ: {e}")

@@ -3,3 +3,6 @@ uvicorn[standard]
 pydantic
 pydantic-settings
 httpx
+aio-pika
+sqlalchemy
+asyncpg

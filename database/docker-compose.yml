@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: sidtra-postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sentiment_analysis_db
+      POSTGRES_USER: sidtra_user
+      POSTGRES_PASSWORD: sidtra_secure_password_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sidtra_user -d sentiment_analysis_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    name: sidtra_postgres_volume
