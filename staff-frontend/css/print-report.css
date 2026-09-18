@@ -1,0 +1,93 @@
+/* print-report.css
+ * Estilos para exportación formal e impresión de Reportes Ejecutivos (RF-04)
+ */
+
+@media print {
+    body {
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
+        font-family: 'Inter', -apple-system, sans-serif !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .app-header,
+    .tab-navigation-bar,
+    .header-actions,
+    .btn-primary-action,
+    .btn-icon-action,
+    .modal-backdrop,
+    .toast-alert-container,
+    .no-print {
+        display: none !important;
+    }
+
+    .dashboard-main-content {
+        max-width: 100% !important;
+        padding: 20px !important;
+    }
+
+    .printable-report-container {
+        display: block !important;
+        page-break-after: avoid;
+    }
+
+    .report-print-header {
+        border-bottom: 2px solid #0F172A;
+        padding-bottom: 12px;
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .report-print-header h1 {
+        font-size: 20pt;
+        color: #0F172A;
+        margin: 0;
+    }
+
+    .report-print-header p {
+        font-size: 10pt;
+        color: #64748B;
+        margin: 4px 0 0 0;
+    }
+
+    .report-print-meta {
+        font-size: 9pt;
+        text-align: right;
+        color: #475569;
+    }
+
+    .report-summary-box {
+        background-color: #F8FAFC !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 8px !important;
+        padding: 16px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .data-table-custom {
+        width: 100% !important;
+        border: 1px solid #E2E8F0 !important;
+    }
+
+    .data-table-custom th {
+        background-color: #F1F5F9 !important;
+        color: #0F172A !important;
+    }
+
+    .data-table-custom td {
+        border-bottom: 1px solid #E2E8F0 !important;
+    }
+
+    .report-footer-print {
+        margin-top: 40px;
+        border-top: 1px solid #E2E8F0;
+        padding-top: 12px;
+        font-size: 8pt;
+        color: #94A3B8;
+        display: flex;
+        justify-content: space-between;
+    }
+}
