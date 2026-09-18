@@ -6,3 +6,5 @@ httpx
 aio-pika
 sqlalchemy
 asyncpg
+pytest
+pytest-asyncio
