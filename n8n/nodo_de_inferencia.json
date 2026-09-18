@@ -116,13 +116,13 @@
               "id": "b7804515-0839-41a4-a18b-8037744d9a97",
               "name": "puntaje",
               "value": "={{ JSON.parse($json.output).sentiment_score }}",
-              "type": "string"
+              "type": "number"
             },
             {
               "id": "b7381069-f26c-4248-8783-90209ffa49c6",
               "name": "confianza",
               "value": "={{ JSON.parse($json.output).confidence }}",
-              "type": "string"
+              "type": "number"
             },
             {
               "id": "199791c9-647e-4fea-97b2-2e17db028a44",
@@ -146,7 +146,7 @@
               "id": "4db39b58-5646-4de5-8bf1-d66276f33076",
               "name": "rating",
               "value": "={{ $('Datos de Entrada').item.json.rating }}",
-              "type": "string"
+              "type": "number"
             },
             {
               "id": "0877be2d-c6b6-4c11-876f-ee00dcb451a2",
@@ -182,7 +182,125 @@
         -416
       ],
       "id": "d8bc5118-cb3b-446f-9ef4-cc1e2fe95964",
-      "name": "Analizador de Sentimientos"
+      "name": "Analizador de Sentimientos",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8a260433-561a-4b24-b7d5-c22551650685",
+              "name": "sentimiento",
+              "value": "Neutral",
+              "type": "string"
+            },
+            {
+              "id": "cda932bf-d77e-40ba-ad61-01ba8ad0bd1a",
+              "name": "puntaje",
+              "value": "=0",
+              "type": "number"
+            },
+            {
+              "id": "135ef9e2-34b3-447d-b099-4833c86f7a7f",
+              "name": "confianza",
+              "value": "=0",
+              "type": "number"
+            },
+            {
+              "id": "3e046fcb-46b7-497e-a038-8931528726c1",
+              "name": "temas",
+              "value": "[]",
+              "type": "string"
+            },
+            {
+              "id": "817fb501-c632-457d-97ab-5bf9526b3bfd",
+              "name": "review_id",
+              "value": "={{ $('Datos de Entrada').item.json.reviwe_id }}",
+              "type": "string"
+            },
+            {
+              "id": "7386c013-9654-4149-8c04-73d0abb29fa0",
+              "name": "producto_id",
+              "value": "={{ $('Datos de Entrada').item.json.producto_id }}",
+              "type": "string"
+            },
+            {
+              "id": "c47c9bee-0abe-4dae-ad65-67fffe945cd6",
+              "name": "rating",
+              "value": "={{ $('Datos de Entrada').item.json.rating }}",
+              "type": "number"
+            },
+            {
+              "id": "21627cef-95f9-4d15-b0da-f0bfa13c008d",
+              "name": "status",
+              "value": "FALLBACK",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -80,
+        -200
+      ],
+      "id": "f328e323-fec7-472b-83a4-e17ab700b393",
+      "name": "Fallback AI"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a037cba7-d1ee-4244-ba36-a150283878ab",
+              "leftValue": "={{ $json.sentimiento }}",
+              "rightValue": "Negative",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        176,
+        -600
+      ],
+      "id": "e4abcb0b-b13e-42be-b3bd-4a95046d8f7f",
+      "name": "Es Negativo?"
+    },
+    {
+      "parameters": {
+        "fromEmail": "alerts@sidtra.com",
+        "toEmail": "staff@sidtra.com",
+        "subject": "=Alerta Reseña Negativa: {{ $json.producto_id }}",
+        "text": "=Se detectó una reseña negativa.\\nID: {{ $json.review_id }}\\nPuntaje: {{ $json.puntaje }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        400,
+        -600
+      ],
+      "id": "74c9cd3e-4e22-4913-b5c1-969943ec92f4",
+      "name": "Alerta Staff"
     }
   ],
   "pinData": {
@@ -276,6 +394,11 @@
             "node": "Backend Output",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Es Negativo?",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -288,7 +411,37 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Fallback AI",
+            "type": "main",
+            "index": 0
+          }
         ]
+      ]
+    },
+    "Fallback AI": {
+      "main": [
+        [
+          {
+            "node": "Backend Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es Negativo?": {
+      "main": [
+        [
+          {
+            "node": "Alerta Staff",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
       ]
     }
   },
