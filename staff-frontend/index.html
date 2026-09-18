@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexWork Systems - Panel de Control & Calidad (Staff)</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Compartido & Estilos del Dashboard -->
+    <link rel="stylesheet" href="../user-frontend/css/design-system.css">
+    <link rel="stylesheet" href="css/staff-dashboard.css">
+    <link rel="stylesheet" href="css/print-report.css">
+</head>
+<body class="dashboard-app">
+
+    <!-- Header Corporativo Idéntico a NexWork Systems -->
+    <header class="app-header">
+        <div class="logo-area" title="NexWork Systems - Panel Administrativo">
+            <div class="brand-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="logo">NexWork</span>
+                <span class="logo-sub">SYSTEMS</span>
+            </div>
+            <span class="staff-tag-badge">Panel Staff & Operaciones</span>
+        </div>
+
+        <div class="header-actions">
+            <div class="system-status-pill" title="La Inteligencia Artificial está procesando reseñas activamente">
+                <span class="pulse-dot"></span>
+                <span>IA: Operando con Normalidad</span>
+            </div>
+
+            <select id="timeRangeSelect" class="date-select-control" aria-label="Rango de Tiempo">
+                <option value="24h">Últimas 24 Horas</option>
+                <option value="7d">Últimos 7 Días</option>
+                <option value="30d">Últimos 30 Días</option>
+                <option value="q3">Año en Curso (2026)</option>
+            </select>
+
+            <button id="btnSyncTelemetry" class="btn-icon-action" title="Actualizar datos con la tienda">
+                <span>🔄</span> Sincronizar
+            </button>
+
+            <button id="btnGenerateReport" class="btn-primary-action" title="Descargar reporte para dirección y marketing">
+                <span>📄</span> Generar Reporte PDF
+            </button>
+
+            <div class="user-profile-badge">
+                <div class="user-avatar-mini">AD</div>
+                <span>Administrador / Moderador</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Barra de Navegación por Pestañas -->
+    <nav class="tab-navigation-bar" aria-label="Navegación del Dashboard">
+        <button class="nav-tab-btn active" data-tab="dashboard">
+            <span>📊</span> Resumen General
+        </button>
+        <button class="nav-tab-btn" data-tab="alerts">
+            <span>🚨</span> Alertas & Quejas Urgentes
+            <span id="alertBadgeCount" class="tab-badge badge-danger">2</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="catalog">
+            <span>📦</span> Catálogo de Productos (CRUD)
+        </button>
+        <button class="nav-tab-btn" data-tab="feed">
+            <span>📡</span> Opiniones de Clientes (En Vivo)
+            <span class="tab-badge">En Tiempo Real</span>
+        </button>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="dashboard-main-content">
+
+        <!-- ================= VISTA 1: RESUMEN GENERAL (RF-03) ================= -->
+        <section id="view-dashboard" class="tab-view-section active">
+            
+            <div class="help-guide-banner">
+                <div class="help-guide-text">
+                    👋 <strong>Bienvenido al Panel de Control:</strong> Aquí puedes monitorear en tiempo real cómo perciben los clientes los productos de la tienda y detectar oportunidades de mejora.
+                </div>
+                <div>
+                    <span style="font-size: 0.78rem; font-weight: 600; color: #0F766E;">✓ Actualizado en tiempo real</span>
+                </div>
+            </div>
+
+            <!-- Resumen de Tarjetas Clave -->
+            <div class="kpi-cards-grid">
+                <!-- KPI 1: Satisfacción de Clientes -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-label">Aprobación General de Clientes</span>
+                        <span class="kpi-icon">⭐</span>
+                    </div>
+                    <div class="kpi-value-row">
+                        <span id="kpiSatisfactionVal" class="kpi-main-number tabular-nums">88%</span>
+                        <span id="kpiSatisfactionDelta" class="kpi-delta-tag positive">+2.3% vs semana anterior</span>
+                    </div>
+                    <div class="kpi-footer-meta">
+                        <span>Promedio general basado en todas las calificaciones</span>
+                    </div>
+                </div>
+
+                <!-- KPI 2: Opiniones Analizadas -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-label">Opiniones Procesadas por IA</span>
+                        <span class="kpi-icon">🤖</span>
+                    </div>
+                    <div class="kpi-value-row">
+                        <span id="kpiTotalReviewsVal" class="kpi-main-number tabular-nums">1,248</span>
+                    </div>
+                    <div class="kpi-footer-meta">
+                        <span style="color: var(--color-sentiment-pos); font-weight: 600;">98.4% clasificadas automáticamente</span>
+                    </div>
+                </div>
+
+                <!-- KPI 3: Quejas Pendientes de Resolver -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-label">Quejas Pendientes por Resolver</span>
+                        <span class="kpi-icon">🚨</span>
+                    </div>
+                    <div class="kpi-value-row">
+                        <span id="kpiCriticalCountVal" class="kpi-main-number tabular-nums" style="color: var(--color-sentiment-neg);">2</span>
+                        <span class="kpi-delta-tag negative">Atención Prioritaria</span>
+                    </div>
+                    <div class="kpi-footer-meta">
+                        <span>Casos reportados por clientes que requieren atención</span>
+                    </div>
+                </div>
+
+                <!-- KPI 4: Estado del Sistema de IA -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-label">Modelo de Inteligencia Artificial</span>
+                        <span class="kpi-icon">⚡</span>
+                    </div>
+                    <div class="kpi-value-row" style="margin-top: 4px;">
+                        <span id="kpiEngineStatusVal" style="font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">Azure OpenAI GPT-4o</span>
+                    </div>
+                    <div class="kpi-footer-meta">
+                        <span id="kpiEngineLatencyVal" style="color: var(--color-accent-indigo); font-weight: 600;">142ms tiempo de respuesta</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos de Sentimiento y Departamentos -->
+            <div class="analytics-two-columns">
+                <!-- Gráfico 1: Distribución Global de Sentimiento -->
+                <div class="dashboard-panel-card">
+                    <div class="panel-header">
+                        <div>
+                            <h2 class="panel-title">Distribución del Sentimiento de los Clientes</h2>
+                            <p class="panel-subtitle">Proporción de opiniones positivas, neutras y negativas</p>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div id="sentimentDistChart"></div>
+                    </div>
+                </div>
+
+                <!-- Gráfico 2: Desempeño por Departamento -->
+                <div class="dashboard-panel-card">
+                    <div class="panel-header">
+                        <div>
+                            <h2 class="panel-title">Nivel de Aprobación por Categoría</h2>
+                            <p class="panel-subtitle">Porcentaje de satisfacción en cada línea de producto</p>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div id="departmentBarsContainer" class="dept-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Riesgo y Resumen de Productos -->
+            <div class="dashboard-panel-card">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">Resumen de Calidad por Producto</h2>
+                        <p class="panel-subtitle">Monitoreo de satisfacción y alertas tempranas por artículo</p>
+                    </div>
+                    <div>
+                        <select id="categoryFilterSelect" class="date-select-control" aria-label="Filtrar por Categoría">
+                            <option value="all">Todas las Categorías</option>
+                            <option value="Monitores">Monitores</option>
+                            <option value="Mobiliario">Mobiliario</option>
+                            <option value="Audio">Audio (Con Alertas)</option>
+                            <option value="Periféricos">Periféricos</option>
+                            <option value="Accesorios">Accesorios</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-responsive-wrap">
+                    <table class="data-table-custom">
+                        <thead>
+                            <tr>
+                                <th>Código SKU</th>
+                                <th>Nombre del Producto</th>
+                                <th>Categoría</th>
+                                <th>Satisfacción</th>
+                                <th>Estado de Calidad</th>
+                                <th>Observación Principal Detectada</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sentimentMatrixTableBody">
+                            <!-- Inyectado dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ================= VISTA 2: SEGUIMIENTO DE ALERTAS Y EMERGENCIAS (OFICIAL) ================= -->
+        <section id="view-alerts" class="tab-view-section">
+            <div class="dashboard-panel-card">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">🚨 Bandeja de Alertas Críticas y Quejas de Clientes</h2>
+                        <p class="panel-subtitle">Notificaciones automáticas generadas por la IA cuando se detectan fallas o clientes insatisfechos</p>
+                    </div>
+                    <div>
+                        <select id="alertsStatusFilter" class="date-select-control" aria-label="Filtrar Estado de Alertas">
+                            <option value="unresolved">Pendientes por Resolver (Urgentes)</option>
+                            <option value="resolved">Casos ya Atendidos / Archivados</option>
+                            <option value="all">Todas las Quejas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div id="alertsListContainer" class="live-feed-list">
+                        <!-- Inyectado dinámicamente con opciones de Resolver Queja, Notificar Slack o Pausar Producto -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= VISTA 3: GESTIÓN DE CATÁLOGO CRUD (RF-05) ================= -->
+        <section id="view-catalog" class="tab-view-section">
+            <div class="dashboard-panel-card">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">📦 Catálogo de Productos de NexWork Systems</h2>
+                        <p class="panel-subtitle">Agrega nuevos artículos, edita precios o pausa productos temporalmente si presentan fallas</p>
+                    </div>
+                    <div>
+                        <button id="btnOpenAddProduct" class="btn-primary-action">
+                            <span>➕</span> Agregar Nuevo Producto
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive-wrap">
+                    <table class="data-table-custom">
+                        <thead>
+                            <tr>
+                                <th>Código SKU</th>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Precio (USD)</th>
+                                <th>Disponibilidad en Tienda</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsCrudTableBody">
+                            <!-- Inyectado dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= VISTA 4: OPINIONES EN VIVO (RF-03) ================= -->
+        <section id="view-feed" class="tab-view-section">
+            <div class="dashboard-panel-card">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">📡 Flujo de Opiniones de Clientes en Tiempo Real</h2>
+                        <p class="panel-subtitle">Entrada continua de reseñas con datos personales protegidos (PII Masking)</p>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="feedSearchInput" class="date-select-control" placeholder="🔍 Buscar por palabra o producto..." style="width: 250px;">
+                        <select id="feedSentimentFilter" class="date-select-control" aria-label="Filtrar Sentimiento">
+                            <option value="all">Todos los Sentimientos</option>
+                            <option value="negative">🚨 Solo Quejas Críticas</option>
+                            <option value="neutral">⚠️ Solo Neutras</option>
+                            <option value="positive">✓ Solo Positivas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div id="liveFeedContainer" class="live-feed-list">
+                        <!-- Inyectado dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= MODAL: AGREGAR PRODUCTO (RF-05) ================= -->
+    <div id="modalAddProduct" class="modal-backdrop">
+        <div class="modal-card-box">
+            <div class="modal-header-bar">
+                <h3>Agregar Nuevo Producto al Catálogo</h3>
+                <button class="btn-close-modal" onclick="StaffApp.closeModal('modalAddProduct')">&times;</button>
+            </div>
+            <form id="formAddProduct">
+                <div class="modal-content-body">
+                    <div class="form-group-field">
+                        <label for="addSku">Código SKU del Producto</label>
+                        <input type="text" id="addSku" name="sku" placeholder="Ej. MON-5500" required>
+                    </div>
+                    <div class="form-group-field">
+                        <label for="addName">Nombre Comercial</label>
+                        <input type="text" id="addName" name="name" placeholder="Ej. Aura UltraScreen 4K Pro" required>
+                    </div>
+                    <div class="form-group-field">
+                        <label for="addCategory">Categoría</label>
+                        <select id="addCategory" name="category" required>
+                            <option value="Monitores">Monitores</option>
+                            <option value="Mobiliario">Mobiliario</option>
+                            <option value="Audio">Audio</option>
+                            <option value="Periféricos">Periféricos</option>
+                            <option value="Accesorios">Accesorios</option>
+                        </select>
+                    </div>
+                    <div class="form-group-field">
+                        <label for="addPrice">Precio de Venta ($ USD)</label>
+                        <input type="text" id="addPrice" name="price" placeholder="Ej. $899.00" required>
+                    </div>
+                    <div class="form-group-field">
+                        <label for="addImageUrl">Enlace de Imagen</label>
+                        <input type="url" id="addImageUrl" name="imageUrl" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=700&auto=format&fit=crop&q=80">
+                    </div>
+                    <div class="form-group-field">
+                        <label for="addDesc">Descripción y Especificaciones</label>
+                        <textarea id="addDesc" name="desc" rows="3" placeholder="Describe los materiales, dimensiones y características principales..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer-bar">
+                    <button type="button" class="btn-icon-action" onclick="StaffApp.closeModal('modalAddProduct')">Cancelar</button>
+                    <button type="submit" class="btn-primary-action">Guardar Producto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: EDITAR PRODUCTO (RF-05) ================= -->
+    <div id="modalEditProduct" class="modal-backdrop">
+        <div class="modal-card-box">
+            <div class="modal-header-bar">
+                <h3>Editar Información de Producto</h3>
+                <button class="btn-close-modal" onclick="StaffApp.closeModal('modalEditProduct')">&times;</button>
+            </div>
+            <form id="formEditProduct">
+                <input type="hidden" id="editId" name="editId">
+                <div class="modal-content-body">
+                    <div class="form-group-field">
+                        <label for="editName">Nombre Comercial</label>
+                        <input type="text" id="editName" name="editName" required>
+                    </div>
+                    <div class="form-group-field">
+                        <label for="editCategory">Categoría</label>
+                        <select id="editCategory" name="editCategory" required>
+                            <option value="Monitores">Monitores</option>
+                            <option value="Mobiliario">Mobiliario</option>
+                            <option value="Audio">Audio</option>
+                            <option value="Periféricos">Periféricos</option>
+                            <option value="Accesorios">Accesorios</option>
+                        </select>
+                    </div>
+                    <div class="form-group-field">
+                        <label for="editPrice">Precio de Venta ($ USD)</label>
+                        <input type="text" id="editPrice" name="editPrice" required>
+                    </div>
+                    <div class="form-group-field">
+                        <label for="editImageUrl">Enlace de Imagen</label>
+                        <input type="url" id="editImageUrl" name="editImageUrl" required>
+                    </div>
+                    <div class="form-group-field">
+                        <label for="editDesc">Descripción y Especificaciones</label>
+                        <textarea id="editDesc" name="editDesc" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer-bar">
+                    <button type="button" class="btn-icon-action" onclick="StaffApp.closeModal('modalEditProduct')">Cancelar</button>
+                    <button type="submit" class="btn-primary-action">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: PREVISUALIZACIÓN Y DESCARGA DE REPORTE PDF (RF-04) ================= -->
+    <div id="modalReportPreview" class="modal-backdrop">
+        <div class="modal-card-box" style="max-width: 800px;">
+            <div class="modal-header-bar">
+                <h3>Reporte Estadístico de Satisfacción y Calidad</h3>
+                <button class="btn-close-modal" onclick="StaffApp.closeModal('modalReportPreview')">&times;</button>
+            </div>
+            <div class="modal-content-body" id="reportPreviewContent">
+                <!-- Inyectado dinámicamente por ReportGenerator -->
+            </div>
+            <div class="modal-footer-bar">
+                <button type="button" class="btn-icon-action" onclick="StaffApp.closeModal('modalReportPreview')">Cerrar</button>
+                <button id="btnDownloadReportPdf" type="button" class="btn-primary-action">
+                    <span>📥</span> Imprimir / Descargar en PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor de Alertas Toast -->
+    <div id="toastContainer" class="toast-alert-container"></div>
+
+    <!-- Scripts de la Aplicación -->
+    <script src="js/api.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
