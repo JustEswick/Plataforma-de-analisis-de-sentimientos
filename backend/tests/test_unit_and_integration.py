@@ -1,7 +1,7 @@
 import pytest
 from httpx import AsyncClient, ASGITransport
 from app.main import app
-from app.api.reviews import get_event_publisher, ANALYZED_REVIEWS
+from app.api.reviews import get_event_publisher
 from app.services.pii_masking import mask_pii
 from app.services.feature_engineering import extract_features
 from unittest.mock import AsyncMock
@@ -73,11 +73,35 @@ async def test_cp02_and_cp03_pipeline_and_broker_event():
             assert event_payload["rating"] == 5
             assert event_payload["language"] == "es"
     finally:
-        app.dependency_overrides.clear()
+        app.dependency_overrides.pop(get_event_publisher, None)
+
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from app.core.database import get_db, Base
+from app.models.review import SentimentFeature
+
+TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
+test_engine = create_async_engine(TEST_DATABASE_URL, echo=False)
+TestSessionLocal = async_sessionmaker(bind=test_engine, class_=AsyncSession, expire_on_commit=False)
+
+async def override_get_db():
+    async with TestSessionLocal() as session:
+        yield session
+
+app.dependency_overrides[get_db] = override_get_db
+
+import pytest_asyncio
+
+@pytest_asyncio.fixture(autouse=True)
+async def setup_db():
+    async with test_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+    async with test_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
 
 @pytest.mark.asyncio
-async def test_cp05_analyzed_reviews_callback():
-    """CP-05: Validar que el endpoint callback /reviews/analyzed almacene resultados de n8n."""
+async def test_cp05_and_cp07_analyzed_reviews_callback_and_persistence():
+    """CP-05 & CP-07: Validar que el endpoint /reviews/analyzed almacene resultados en la base de datos."""
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
         analysis_result = {
             "review_id": "rev-test-123",
@@ -92,7 +116,9 @@ async def test_cp05_analyzed_reviews_callback():
         res_post = await ac.post("/reviews/analyzed", json=analysis_result)
         assert res_post.status_code == 200
         
+        # CP-07 Validamos que el get arroje lo persistido
         res_get = await ac.get("/reviews/analyzed")
         assert res_get.status_code == 200
         data = res_get.json()
         assert any(r["review_id"] == "rev-test-123" for r in data)
+        assert any(r["sentimiento"] == "Positive" for r in data)

@@ -62,21 +62,36 @@ async def submit_review(
     )
     return accepted
 
-# Almacenamiento en memoria para resultados procesados por n8n (Módulo de IA)
-ANALYZED_REVIEWS: list[dict] = []
- 
+from app.core.database import get_db
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from app.models.review import SentimentFeature, RawReview
+
 @router.post(
     "/analyzed",
     status_code=status.HTTP_200_OK,
     summary="Recibe el resultado del análisis de sentimientos emitido por n8n (AI Interface Service)",
 )
-async def receive_analyzed_review(request: Request) -> dict:
+async def receive_analyzed_review(request: Request, db: AsyncSession = Depends(get_db)) -> dict:
     """
     Callback que recibe el resultado de n8n (nodo Backend Output)
     con campos: review_id, producto_id, sentimiento, puntaje, confianza, temas, rating, status.
+    Guarda en la base de datos (PostgreSQL).
     """
     payload = await request.json()
-    ANALYZED_REVIEWS.append(payload)
+    
+    # Save the feature to the DB
+    feature = SentimentFeature(
+        review_id=payload.get("review_id"),
+        product_id=payload.get("producto_id"),
+        sentiment_label=payload.get("sentimiento"),
+        sentiment_score=payload.get("puntaje"),
+        confidence=payload.get("confianza"),
+        topics=payload.get("temas", []),
+    )
+    db.add(feature)
+    await db.commit()
+    
     return payload
 
 @router.get(
@@ -84,6 +99,18 @@ async def receive_analyzed_review(request: Request) -> dict:
     status_code=status.HTTP_200_OK,
     summary="Consulta las reseñas analizadas por la IA",
 )
-async def get_analyzed_reviews() -> list[dict]:
-    """Retorna las reseñas analizadas que han llegado desde n8n."""
-    return ANALYZED_REVIEWS
+async def get_analyzed_reviews(db: AsyncSession = Depends(get_db)) -> list[dict]:
+    """Retorna las reseñas analizadas consultando la base de datos."""
+    result = await db.execute(select(SentimentFeature))
+    features = result.scalars().all()
+    return [
+        {
+            "review_id": f.review_id,
+            "producto_id": f.product_id,
+            "sentimiento": f.sentiment_label,
+            "puntaje": f.sentiment_score,
+            "confianza": f.confidence,
+            "temas": f.topics
+        }
+        for f in features
+    ]
