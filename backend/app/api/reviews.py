@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from fastapi import APIRouter, BackgroundTasks, Depends, status
+from fastapi import APIRouter, BackgroundTasks, Depends, Request, status
 from app.core.event_publisher import IEventPublisher, MockEventPublisher
 from app.schemas.review import ReviewAccepted, ReviewCreate
 from app.services.feature_engineering import extract_features
@@ -61,3 +61,29 @@ async def submit_review(
         features.language,
     )
     return accepted
+
+# Almacenamiento en memoria para resultados procesados por n8n (Módulo de IA)
+ANALYZED_REVIEWS: list[dict] = []
+ 
+@router.post(
+    "/analyzed",
+    status_code=status.HTTP_200_OK,
+    summary="Recibe el resultado del análisis de sentimientos emitido por n8n (AI Interface Service)",
+)
+async def receive_analyzed_review(request: Request) -> dict:
+    """
+    Callback que recibe el resultado de n8n (nodo Backend Output)
+    con campos: review_id, producto_id, sentimiento, puntaje, confianza, temas, rating, status.
+    """
+    payload = await request.json()
+    ANALYZED_REVIEWS.append(payload)
+    return payload
+
+@router.get(
+    "/analyzed",
+    status_code=status.HTTP_200_OK,
+    summary="Consulta las reseñas analizadas por la IA",
+)
+async def get_analyzed_reviews() -> list[dict]:
+    """Retorna las reseñas analizadas que han llegado desde n8n."""
+    return ANALYZED_REVIEWS

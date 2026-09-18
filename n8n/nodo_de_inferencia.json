@@ -1,0 +1,309 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -496,
+        -208
+      ],
+      "id": "48d00ca3-3bdc-410c-9158-3c1851f4223d",
+      "name": "Azure OpenAI Chat Model",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "GohY7D8nTswv9wby",
+          "name": "Azure Open AI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ab5e4982-53ca-44fc-9304-ffca7a875506",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1136,
+        -416
+      ],
+      "id": "88da4244-5304-494e-a38d-fe078f2fda33",
+      "name": "Backned Input",
+      "webhookId": "ab5e4982-53ca-44fc-9304-ffca7a875506"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/reviews/analyzed",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        176,
+        -416
+      ],
+      "id": "1c7a1a02-832f-416c-afb2-1287e7feaccc",
+      "name": "Backend Output"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fef1242b-5f53-49cc-97cc-195c625938a6",
+              "name": "prompt_input",
+              "value": "=Calificación: {{ $json.body.rating }} estrellas. Reseña: \"{{ $json.body.masked_text }}\"",
+              "type": "string"
+            },
+            {
+              "id": "4a04c60b-fa7d-4a78-8488-e8b1e89e2646",
+              "name": "reviwe_id",
+              "value": "={{ $json.body.review_id }}",
+              "type": "string"
+            },
+            {
+              "id": "21549af2-ca18-4ac4-9aae-6b7f88f4c0be",
+              "name": "producto_id",
+              "value": "={{ $json.body.product_id }}",
+              "type": "string"
+            },
+            {
+              "id": "56186565-78e8-444e-a47a-c3c48efc5516",
+              "name": "=masked_text",
+              "value": "={{ $json.body.masked_text }}",
+              "type": "string"
+            },
+            {
+              "id": "eb208848-a8ef-4dd1-8153-d2762a31c10f",
+              "name": "rating",
+              "value": "={{ $json.body.rating }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -896,
+        -416
+      ],
+      "id": "7598a50d-4b19-488a-a47f-3971bb4ee6fc",
+      "name": "Datos de Entrada"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5e21e506-a2b4-4302-bd49-3065b953695c",
+              "name": "sentimiento",
+              "value": "={{ JSON.parse($json.output).sentiment_label }}",
+              "type": "string"
+            },
+            {
+              "id": "b7804515-0839-41a4-a18b-8037744d9a97",
+              "name": "puntaje",
+              "value": "={{ JSON.parse($json.output).sentiment_score }}",
+              "type": "string"
+            },
+            {
+              "id": "b7381069-f26c-4248-8783-90209ffa49c6",
+              "name": "confianza",
+              "value": "={{ JSON.parse($json.output).confidence }}",
+              "type": "string"
+            },
+            {
+              "id": "199791c9-647e-4fea-97b2-2e17db028a44",
+              "name": "temas",
+              "value": "={{ JSON.parse($json.output).extracted_topics }}",
+              "type": "string"
+            },
+            {
+              "id": "e78ed3a3-4022-43af-8c11-77241ea4ecde",
+              "name": "review_id",
+              "value": "={{ $('Datos de Entrada').item.json.reviwe_id }}",
+              "type": "string"
+            },
+            {
+              "id": "b720fab8-4c98-4e24-b66f-2a618e81352f",
+              "name": "producto_id",
+              "value": "={{ $('Datos de Entrada').item.json.producto_id }}",
+              "type": "string"
+            },
+            {
+              "id": "4db39b58-5646-4de5-8bf1-d66276f33076",
+              "name": "rating",
+              "value": "={{ $('Datos de Entrada').item.json.rating }}",
+              "type": "string"
+            },
+            {
+              "id": "0877be2d-c6b6-4c11-876f-ee00dcb451a2",
+              "name": "status",
+              "value": "COMPLETED",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -80,
+        -416
+      ],
+      "id": "933d0a8d-03ad-4b07-9817-abb62c983580",
+      "name": "Datos de Salida"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prompt_input }}",
+        "options": {
+          "systemMessage": "Eres un sistema experto en análisis de sentimientos para e-commerce.\nAnaliza la reseña y la calificación del cliente provistas en el mensaje.\nDebes responder ÚNICAMENTE con un objeto JSON válido (sin explicaciones adicionales, sin texto antes ni después, y sin bloques markdown ```json, solo las llaves { }):\n{\n  \"sentiment_label\": \"Positive\",\n  \"sentiment_score\": 0.90,\n  \"confidence\": 0.95,\n  \"extracted_topics\": [\"calidad\", \"envio\", \"precio\"]\n}\n\nReglas:\n- sentiment_label debe ser estrictamente uno de: \"Positive\", \"Negative\" o \"Neutral\".\n- sentiment_score debe ser un número decimal entre -1.0 (muy negativo) y 1.0 (muy positivo).\n- confidence debe ser un número decimal entre 0.0 y 1.0.\n- extracted_topics debe ser un arreglo de cadenas con los temas clave identificados (ej. calidad, empaque, atención, precio, entrega)."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -496,
+        -416
+      ],
+      "id": "d8bc5118-cb3b-446f-9ef4-cc1e2fe95964",
+      "name": "Analizador de Sentimientos"
+    }
+  ],
+  "pinData": {
+    "Backned Input": [
+      {
+        "json": {
+          "headers": {
+            "user-agent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; es-MX) WindowsPowerShell/5.1.26100.9444",
+            "content-type": "application/json",
+            "host": "localhost:5678",
+            "content-length": "336",
+            "expect": "100-continue",
+            "connection": "Keep-Alive"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "rating": 5,
+            "event_timestamp": "2026-09-18T03:42:43Z",
+            "masked_text": "El producto lleg� en perfecto estado y muy r�pido, excelente calidad de materiales.",
+            "language": "es",
+            "product_id": "PROD-TECH-101",
+            "customer_id": "cust_vic_42",
+            "text_length": 84,
+            "review_id": "rev_test_001"
+          },
+          "webhookUrl": "http://localhost:5678/webhook-test/ab5e4982-53ca-44fc-9304-ffca7a875506",
+          "executionMode": "test"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Datos de Salida": [
+      {
+        "json": {
+          "sentimiento": "Positive",
+          "puntaje": "0.95",
+          "confianza": "0.97",
+          "temas": "[\"calidad\",\"envio\",\"estado\"]",
+          "review_id": "rev_test_001",
+          "producto_id": "PROD-TECH-101",
+          "rating": "5",
+          "status": "COMPLETED"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Azure OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analizador de Sentimientos",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Backned Input": {
+      "main": [
+        [
+          {
+            "node": "Datos de Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Datos de Entrada": {
+      "main": [
+        [
+          {
+            "node": "Analizador de Sentimientos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Datos de Salida": {
+      "main": [
+        [
+          {
+            "node": "Backend Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analizador de Sentimientos": {
+      "main": [
+        [
+          {
+            "node": "Datos de Salida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "9516392c-a293-44c7-af58-53029d76f035",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3e15145d49da723aa5c17b8f12de8daf4c1c4cb9fae4014058c5c1baff6f068e"
+  },
+  "nodeGroups": [],
+  "id": "QJ4tVmDvXR5UE68n",
+  "tags": []
+}
