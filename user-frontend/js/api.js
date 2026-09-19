@@ -129,8 +129,29 @@ const MOCK_PRODUCTS = [
     }
 ];
 
-// In-Memory Database for Mock Users
-let mockRegisteredUsers = [];
+// In-Memory & Persistent Local Storage Database for Mock Users
+function getStoredUsers() {
+    try {
+        const stored = localStorage.getItem('nexwork_users');
+        if (stored) return JSON.parse(stored);
+    } catch (e) {}
+    return [
+        {
+            id: 'USR-1',
+            name: 'Demo User',
+            email: 'demo@nexwork.com',
+            company: 'NexWork Corp',
+            password: 'password123',
+            role: 'Cliente Corporativo',
+            orders: [
+                { id: 'NX-1001', product: 'Lumina Bar Pro Smart ScreenBar', date: 'Hoy', total: '$119.00', status: 'En Proceso' }
+            ],
+            reviews: []
+        }
+    ];
+}
+
+let mockRegisteredUsers = getStoredUsers();
 let localProductsState = JSON.parse(JSON.stringify(MOCK_PRODUCTS));
 
 // ApiService Singleton
@@ -188,7 +209,7 @@ window.ApiService = {
             if (res.ok) {
                 const data = await res.json();
                 return { success: true, user: data.user, token: data.token, source: 'remote' };
-            } else {
+            } else if (res.status !== 404 && res.status !== 501 && !API_CONFIG.useMockFallback) {
                 const errorData = await res.json().catch(() => ({}));
                 return { success: false, error: errorData.message || 'Credenciales inválidas', source: 'remote' };
             }
@@ -220,7 +241,7 @@ window.ApiService = {
             if (res.ok) {
                 const data = await res.json();
                 return { success: true, user: data.user, token: data.token, source: 'remote' };
-            } else {
+            } else if (res.status !== 404 && res.status !== 501 && !API_CONFIG.useMockFallback) {
                 const errorData = await res.json().catch(() => ({}));
                 return { success: false, error: errorData.message || 'Error al registrar cuenta', source: 'remote' };
             }
@@ -248,6 +269,10 @@ window.ApiService = {
         };
 
         mockRegisteredUsers.push(newUser);
+        try {
+            localStorage.setItem('nexwork_users', JSON.stringify(mockRegisteredUsers));
+        } catch (e) {}
+
         return { success: true, user: newUser, token: 'mock-jwt-token', source: 'mock' };
     },
 
