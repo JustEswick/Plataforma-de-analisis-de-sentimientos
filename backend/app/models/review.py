@@ -13,6 +13,7 @@ class RawReview(Base):
     customer_id = Column(String, nullable=True)
     raw_text = Column(String)
     rating = Column(Integer)
+    sentiment_label = Column(String, nullable=True)
     received_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 class SentimentFeature(Base):

@@ -307,6 +307,29 @@
         -600
       ],
       "id": "74c9cd3e-4e22-4913-b5c1-969943ec92f4"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE raw_reviews \nSET validation_status = 'processed', \n    sentiment_label = $1 \nWHERE review_id = $2;",
+        "options": {
+          "queryParameters": "={{ JSON.parse($json.output).sentiment_label }},{{ $('Datos de Entrada').item.json.reviwe_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        -80,
+        -600
+      ],
+      "id": "785ae240-20c4-4490-96b9-296e9a79534b",
+      "name": "Database Observer",
+      "credentials": {
+        "postgres": {
+          "id": "sidtra-pg",
+          "name": "Postgres account"
+        }
+      }
     }
   ],
   "pinData": {
@@ -403,6 +426,11 @@
         [
           {
             "node": "Datos de Salida",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Database Observer",
             "type": "main",
             "index": 0
           }

@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS raw_reviews (
     raw_text TEXT NOT NULL,
     masked_text TEXT,
     validation_status review_status_enum DEFAULT 'accepted',
+    sentiment_label sentiment_label_enum,
     submission_timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
